@@ -20,6 +20,7 @@ import rpg.com.paifabio.main.Game;
 public class World {
 	
 	private Tile[] tiles;
+	private Tile[] layer2;
 	public int width,height;
 	public int tileSize=16;
 	
@@ -39,6 +40,7 @@ public class World {
 			BufferedImage floorTile, 
 			BufferedImage wallTile,
 			BufferedImage skyTile,
+			BufferedImage escadaTile,
 			BufferedImage weaponSprite,
 			BufferedImage ammoSprite,
 			BufferedImage lifepackSprite,
@@ -57,6 +59,7 @@ public class World {
 			
 			int[] pixels = new int[width * height];
 			tiles = new Tile[pixels.length];
+			layer2 = new Tile[pixels.length];
 			
 			map.getRGB(0, 0, map.getWidth(), height, pixels, 0, width);
 			//passa pelo mapa todo
@@ -75,6 +78,10 @@ public class World {
 						tiles[index] = new FloorTile(posX*tileSize, posY*tileSize, floorTile);
 					}
 					
+					//preenche layer de objetos (Segundo layer)
+					if(pixelAtual== 0xff0000ff) {
+						layer2[index] = new FloorTile(posX*tileSize, posY*tileSize, escadaTile);
+					}
 					//preenche a camanda acima
 					if(pixelAtual== 0xffff0000) {
 						//enemy
@@ -158,6 +165,10 @@ public class World {
 					continue;
 				
 				Tile tile = tiles[posX + posY * width];
+				if(tile!=null)
+					tile.render(g);
+				
+				tile = layer2[posX + posY * width];
 				if(tile!=null)
 					tile.render(g);
 			}

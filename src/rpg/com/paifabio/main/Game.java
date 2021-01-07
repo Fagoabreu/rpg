@@ -125,6 +125,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 				spritesheet.getSpriteByPosition(0, 0),//floor
 				spritesheet.getSpriteByPosition(1, 0),//wall
 				spritesheet.getSpriteByPosition(0, 1),//sky
+				spritesheet.getSpriteByPosition(1, 1),//escada
 				spritesheet.getSpriteByPosition(7, 0),//weapon
 				spritesheet.getSpriteByPosition(6, 1),//ammo
 				spritesheet.getSpriteByPosition(6, 0),//lifepack
