@@ -42,6 +42,7 @@ public class Enemy extends Entity{
 		if(this.tipoEnemy == TipoEnemy.ESQUELETO) {
 			life=3;
 			speed=0.4;
+			this.setMask(3,0,9,16);
 			idlePlayer = new BufferedImage[4];
 			downPlayer = new BufferedImage[4];
 			leftPlayer = new BufferedImage[4];
@@ -73,7 +74,9 @@ public class Enemy extends Entity{
 			
 		}else if(this.tipoEnemy == TipoEnemy.LOBO) {
 			life=2;
-			speed=0.8;
+			speed=0.6;
+			super.setMask(0,6,14,10);
+			
 			idlePlayer = new BufferedImage[4];
 			downPlayer= new BufferedImage[4];
 			leftPlayer = new BufferedImage[4];
