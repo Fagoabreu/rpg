@@ -81,7 +81,7 @@ public class World {
 						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.ESQUELETO);
 						entityList.add(en);
 						enemyList.add(en);
-					}else if(pixelAtual== 0xffdd0000) {
+					}else if(pixelAtual== 0xffaa0000) {
 							//enemy
 							Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.LOBO);
 							entityList.add(en);
