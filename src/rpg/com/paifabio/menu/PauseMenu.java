@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import rpg.com.paifabio.main.Game;
-import rpg.com.paifabio.main.Sound;
+import rpg.com.paifabio.sound.Sound;
 
 public class PauseMenu {
 	private int width,height,scale;

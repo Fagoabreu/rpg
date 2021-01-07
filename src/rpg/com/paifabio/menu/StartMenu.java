@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import rpg.com.paifabio.main.Game;
-import rpg.com.paifabio.main.Sound;
+import rpg.com.paifabio.sound.Sound;
 
 public class StartMenu {
 
@@ -30,6 +30,7 @@ public class StartMenu {
 		this.width=width;
 		this.height=height;
 		this.scale=scale;
+		Sound.musicBackground.loop();
 	}
 	
 	public void tick() {

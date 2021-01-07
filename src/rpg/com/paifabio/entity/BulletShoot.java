@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import rpg.com.paifabio.main.Game;
-import rpg.com.paifabio.main.Sound;
+import rpg.com.paifabio.sound.Sound;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
 
