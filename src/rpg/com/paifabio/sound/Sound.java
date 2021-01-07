@@ -13,52 +13,62 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Sound {
 
-	public static Clips musicBackground = load("/volvion_8bit_level.wav");
-	public static Clips death = load("/death.wav");
-	public static Clips heal = load("/heal.wav");
-	public static Clips hit = load("/hit.wav");
-	public static Clips hurt = load("/hurt.wav");
-	public static Clips menu = load("/menu.wav");
-	public static Clips pick = load("/pick.wav");
-	public static Clips shoot = load("/shoot.wav");
+	public static Clips musicBackground = load("/volvion_8bit_level.wav",1);
+	public static Clips death = load("/death.wav",1);
+	public static Clips heal = load("/heal.wav",1);
+	public static Clips hit = load("/hit.wav",1);
+	public static Clips hurt = load("/hurt.wav",1);
+	public static Clips menu = load("/menu.wav",1);
+	public static Clips pick = load("/pick.wav",1);
+	public static Clips shoot = load("/shoot.wav",1);
 	
 	public static class Clips{
-		public Clip clip;
+		public Clip[] clips;
+		private int p;
+		private int count;
 		
-		public Clips(byte[] buffer) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
+		public Clips(byte[] buffer, int count) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 			if (buffer==null)
 				return;
-			clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(new ByteArrayInputStream(buffer)));
+			
+			clips = new Clip[count];
+			this.count = count;
+			
+			for(int i = 0; i < count; i++) {
+				clips[i] = AudioSystem.getClip();
+				clips[i].open(AudioSystem.getAudioInputStream(new ByteArrayInputStream(buffer)));
+			}
 		}
 		
 		public void play() {
-			if(clip==null)
+			if(clips==null)
 				return;
 			
-			clip.stop();
-			clip.setFramePosition(0);
-			clip.start();
+			clips[p].stop();
+			clips[p].setFramePosition(0);
+			clips[p].start();
+			p++;
+			if(p>=count) p = 0;
 		}
 		
 		public void loop() {
-			if(clip==null)
+			if(clips==null)
 				return;
-			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			clips[p].loop(Clip.LOOP_CONTINUOUSLY);
 		}
 		
 		public void setVolume(int volume) {
 			//ajusta o volume entre 0 e 100
 			volume =volume<0?0:volume>100?100:volume;
 			
-			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			FloatControl gainControl = (FloatControl) clips[p].getControl(FloatControl.Type.MASTER_GAIN);
 			float range = gainControl.getMaximum() - gainControl.getMinimum();
 			float gain = ((float)volume/100) * range + gainControl.getMinimum();
 			gainControl.setValue(gain);
 		}
 	}
 	
-	public static Clips load(String name) {
+	public static Clips load(String name,int count) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataInputStream dis = new DataInputStream(SoundOld.class.getResourceAsStream(name));
@@ -70,7 +80,7 @@ public class Sound {
 			}
 			dis.close();
 			byte[] data = baos.toByteArray();
-			return new Clips(data);
+			return new Clips(data,count);
 			
 		}catch (Exception e) {
 			return null;
