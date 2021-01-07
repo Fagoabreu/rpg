@@ -13,6 +13,7 @@ import rpg.com.paifabio.entity.Entity;
 import rpg.com.paifabio.entity.LifePack;
 import rpg.com.paifabio.entity.Player;
 import rpg.com.paifabio.entity.Weapon;
+import rpg.com.paifabio.enums.TipoEnemy;
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
 
@@ -77,10 +78,16 @@ public class World {
 					//preenche a camanda acima
 					if(pixelAtual== 0xffff0000) {
 						//enemy
-						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet);
+						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.ESQUELETO);
 						en.setMask(3,0,9,16);
 						entityList.add(en);
 						enemyList.add(en);
+					}else if(pixelAtual== 0xffdd0000) {
+							//enemy
+							Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.LOBO);
+							en.setMask(3,0,9,16);
+							entityList.add(en);
+							enemyList.add(en);
 						
 					}else if(pixelAtual== 0xff00ff00) {
 						//weapon

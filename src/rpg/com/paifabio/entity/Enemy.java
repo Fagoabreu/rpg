@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import rpg.com.paifabio.enums.TipoEnemy;
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.world.Camera;
@@ -12,6 +13,7 @@ import rpg.com.paifabio.world.World;
 
 public class Enemy extends Entity{
 	private double speed=0.4;
+	private TipoEnemy tipoEnemy=null;
 	
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
@@ -29,42 +31,78 @@ public class Enemy extends Entity{
 
 	private int life=3;
 	
-	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet) {
-		this(x, y, width, height, spritesheet,0, 0, 0,0);
+	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,TipoEnemy tipoEnemy) {
+		this(x, y, width, height, spritesheet,0, 0, 0,0,tipoEnemy);
 	}
-	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,int maskX, int maskY, int maskW,int maskH) {
+	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,int maskX, int maskY, int maskW,int maskH,TipoEnemy tipoEnemy) {
 		super(x, y, width, height, spritesheet.getSpriteByPosition(2, 6));
 		
 		super.setMask(maskX, maskY, maskW, maskH);
-		
-		idlePlayer = new BufferedImage[4];
-		downPlayer = new BufferedImage[4];
-		leftPlayer = new BufferedImage[4];
-		rightPlayer = new BufferedImage[4];
-		damagePlayer = new BufferedImage[2];
-		
-		idlePlayer[0] =	spritesheet.getSpriteByPosition(2, 6);
-		idlePlayer[1] =	spritesheet.getSpriteByPosition(3, 6);
-		idlePlayer[2] =	spritesheet.getSpriteByPosition(4, 6);
-		idlePlayer[3] =	spritesheet.getSpriteByPosition(5, 6);
-		
-		downPlayer[0] = spritesheet.getSpriteByPosition(2, 7);
-		downPlayer[1] = spritesheet.getSpriteByPosition(3, 7);
-		downPlayer[2] = spritesheet.getSpriteByPosition(4, 7);
-		downPlayer[3] = spritesheet.getSpriteByPosition(5, 7);
-		
-		leftPlayer[0] = spritesheet.getSpriteByPosition(2, 8);
-		leftPlayer[1] = spritesheet.getSpriteByPosition(3, 8);
-		leftPlayer[2] = spritesheet.getSpriteByPosition(4, 8);
-		leftPlayer[3] = spritesheet.getSpriteByPosition(5, 8);
-		
-		rightPlayer[0] = spritesheet.getSpriteByPosition(2, 9);
-		rightPlayer[1] = spritesheet.getSpriteByPosition(3, 9);
-		rightPlayer[2] = spritesheet.getSpriteByPosition(4, 9);
-		rightPlayer[3] = spritesheet.getSpriteByPosition(5, 9);
-		
-		damagePlayer[0] = spritesheet.getSpriteByPosition(0, 6);
-		damagePlayer[1] = spritesheet.getSpriteByPosition(1, 6);
+		this.tipoEnemy =tipoEnemy;
+		if(this.tipoEnemy == TipoEnemy.ESQUELETO) {
+			life=3;
+			speed=0.4;
+			idlePlayer = new BufferedImage[4];
+			downPlayer = new BufferedImage[4];
+			leftPlayer = new BufferedImage[4];
+			rightPlayer = new BufferedImage[4];
+			damagePlayer = new BufferedImage[2];
+			
+			idlePlayer[0] =	spritesheet.getSpriteByPosition(2, 6);
+			idlePlayer[1] =	spritesheet.getSpriteByPosition(3, 6);
+			idlePlayer[2] =	spritesheet.getSpriteByPosition(4, 6);
+			idlePlayer[3] =	spritesheet.getSpriteByPosition(5, 6);
+			
+			downPlayer[0] = spritesheet.getSpriteByPosition(2, 7);
+			downPlayer[1] = spritesheet.getSpriteByPosition(3, 7);
+			downPlayer[2] = spritesheet.getSpriteByPosition(4, 7);
+			downPlayer[3] = spritesheet.getSpriteByPosition(5, 7);
+			
+			leftPlayer[0] = spritesheet.getSpriteByPosition(2, 8);
+			leftPlayer[1] = spritesheet.getSpriteByPosition(3, 8);
+			leftPlayer[2] = spritesheet.getSpriteByPosition(4, 8);
+			leftPlayer[3] = spritesheet.getSpriteByPosition(5, 8);
+			
+			rightPlayer[0] = spritesheet.getSpriteByPosition(2, 9);
+			rightPlayer[1] = spritesheet.getSpriteByPosition(3, 9);
+			rightPlayer[2] = spritesheet.getSpriteByPosition(4, 9);
+			rightPlayer[3] = spritesheet.getSpriteByPosition(5, 9);
+			
+			damagePlayer[0] = spritesheet.getSpriteByPosition(0, 6);
+			damagePlayer[1] = spritesheet.getSpriteByPosition(1, 6);
+			
+		}else if(this.tipoEnemy == TipoEnemy.LOBO) {
+			life=2;
+			speed=0.8;
+			idlePlayer = new BufferedImage[4];
+			downPlayer= new BufferedImage[4];
+			leftPlayer = new BufferedImage[4];
+			rightPlayer = new BufferedImage[4];
+			damagePlayer = new BufferedImage[2];
+			
+			idlePlayer[0] = spritesheet.getSpriteByPosition(6, 6);
+			idlePlayer[1] = spritesheet.getSpriteByPosition(7, 6);
+			idlePlayer[2] = spritesheet.getSpriteByPosition(8, 6);
+			idlePlayer[3] = spritesheet.getSpriteByPosition(9, 6);
+			
+			downPlayer[0] = spritesheet.getSpriteByPosition(6, 7);
+			downPlayer[1] = spritesheet.getSpriteByPosition(7, 7);
+			downPlayer[2] = spritesheet.getSpriteByPosition(8, 7);
+			downPlayer[3] = spritesheet.getSpriteByPosition(9, 7);
+			
+			leftPlayer[0] = spritesheet.getSpriteByPosition(6, 8);
+			leftPlayer[1] = spritesheet.getSpriteByPosition(7, 8);
+			leftPlayer[2] = spritesheet.getSpriteByPosition(8, 8);
+			leftPlayer[3] = spritesheet.getSpriteByPosition(9, 8);
+			
+			rightPlayer[0] = spritesheet.getSpriteByPosition(6, 9);
+			rightPlayer[1] = spritesheet.getSpriteByPosition(7, 9);
+			rightPlayer[2] = spritesheet.getSpriteByPosition(8, 9);
+			rightPlayer[3] = spritesheet.getSpriteByPosition(9, 9);
+			
+			damagePlayer[0] = spritesheet.getSpriteByPosition(0, 7);
+			damagePlayer[1] = spritesheet.getSpriteByPosition(1, 7);
+		}
 		
 		curAnim=downPlayer;
 		
