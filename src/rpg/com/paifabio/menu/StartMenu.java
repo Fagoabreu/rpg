@@ -31,6 +31,7 @@ public class StartMenu {
 		this.height=height;
 		this.scale=scale;
 		Sound.musicBackground.loop();
+		Sound.musicBackground.setVolume(80);
 	}
 	
 	public void tick() {
@@ -43,6 +44,7 @@ public class StartMenu {
 				currentOption=maxOption;
 			}
 		}else if(down) {
+			
 			down=false;
 			Sound.menu.play();
 			currentOption++;

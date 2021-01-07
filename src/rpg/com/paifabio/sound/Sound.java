@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -22,29 +23,38 @@ public class Sound {
 	public static Clips shoot = load("/shoot.wav");
 	
 	public static class Clips{
-		public Clip clips;
+		public Clip clip;
 		
 		public Clips(byte[] buffer) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 			if (buffer==null)
 				return;
-			
-			clips = AudioSystem.getClip();
-			clips.open(AudioSystem.getAudioInputStream(new ByteArrayInputStream(buffer)));
+			clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(new ByteArrayInputStream(buffer)));
 		}
 		
 		public void play() {
-			if(clips==null)
+			if(clip==null)
 				return;
 			
-			clips.stop();
-			clips.setFramePosition(0);
-			clips.start();
+			clip.stop();
+			clip.setFramePosition(0);
+			clip.start();
 		}
 		
 		public void loop() {
-			if(clips==null)
+			if(clip==null)
 				return;
-			clips.loop(Clip.LOOP_CONTINUOUSLY);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		
+		public void setVolume(int volume) {
+			//ajusta o volume entre 0 e 100
+			volume =volume<0?0:volume>100?100:volume;
+			
+			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			float range = gainControl.getMaximum() - gainControl.getMinimum();
+			float gain = ((float)volume/100) * range + gainControl.getMinimum();
+			gainControl.setValue(gain);
 		}
 	}
 	
