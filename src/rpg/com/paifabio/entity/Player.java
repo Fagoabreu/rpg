@@ -153,18 +153,18 @@ public class Player extends Entity {
 		idlePlayer[6] =	spritesheet.getSprite(64, 80);
 		idlePlayer[7] =	spritesheet.getSprite(80, 80);
 		
-		damagePlayer[0] = spritesheet.getSpriteByPosition(0, 2);
-		damagePlayer[1] = spritesheet.getSpriteByPosition(1, 2);
+		damagePlayer[0] = spritesheet.getSpriteByPosition(0, 5);
+		damagePlayer[1] = spritesheet.getSpriteByPosition(1, 5);
 		
 		curAnim=idlePlayer;
 		
-		//inicializa animaÃ§Ãµes de armas
+		//inicializa animações de armas
 		gunSprites = new BufferedImage[5];
 		gunSprites[0] = spritesheet.getSpriteByPosition(8, 0);//direita
 		gunSprites[1] = spritesheet.getSpriteByPosition(9, 0);//esquerda
 		gunSprites[2] = spritesheet.getSpriteByPosition(8, 1);//cima direita
 		gunSprites[3] = spritesheet.getSpriteByPosition(9, 1);//cima esquerda
-		gunSprites[4] = spritesheet.getSpriteByPosition(8, 2);//hit
+		gunSprites[4] = spritesheet.getSpriteByPosition(7, 1);//hit
 		gunSpriteIndex=0;
 	}
 	

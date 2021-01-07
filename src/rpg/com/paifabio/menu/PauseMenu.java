@@ -10,6 +10,16 @@ import rpg.com.paifabio.sound.Sound;
 
 public class PauseMenu {
 	private int width,height,scale;
+	
+	private final String[] comandos = {
+		"W A S D = Mover",
+		"E ou MOUSE ESQUERDO = Atacar",
+		"ESC = Parar Jogo",
+		"ENTER = Interagir Menu",
+		"DELETE = Modo Depuração"
+		
+	};
+	
 	private final String[] options = {
 			"continue",
 			"sair"};
@@ -79,6 +89,14 @@ public class PauseMenu {
 			g2.setColor(colorText);
 			g2.drawString(options[i], (60*scale/2) ,((height )*scale/2)+ (i*30));
 			
+		}
+		
+		for(int i =0; i<comandos.length;i++) {
+			g2.setFont(new Font("arial",Font.BOLD,4*scale));
+			g2.setColor(Color.black);
+			g2.drawString(comandos[i], ((width-70)*scale)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.setColor(Color.white);
+			g2.drawString(comandos[i], ((width-70)*scale) ,((height )*scale/2)+ (i*30));
 		}
 	}
 }
