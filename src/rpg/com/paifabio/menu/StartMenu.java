@@ -93,7 +93,7 @@ public class StartMenu {
 		g2.drawString("Torre das Caveiras", (width-180)/2*scale ,(40)*scale);
 		
 		
-		//rodapÃ©
+		//rodapé
 		g2.setFont(new Font("arial",Font.BOLD,4*scale));
 		g2.setColor(Color.black);
 		g2.drawString("Por Fabio Gomes de Abreu", (width-70)*scale +1 ,(height-15)*scale +1);
