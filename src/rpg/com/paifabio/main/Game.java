@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import rpg.com.paifabio.menu.PauseMenu;
 import rpg.com.paifabio.menu.StartMenu;
 import rpg.com.paifabio.world.World;
 
-public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
+public class Game extends Canvas implements Runnable,KeyListener, MouseListener,MouseMotionListener{
 	
 	private static final long serialVersionUID = 1013703851778961047L;
 	
@@ -114,6 +115,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 		rand = new Random();
 		addKeyListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(this);
 		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 		
@@ -418,6 +420,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			double angulo = player.getRadToPoint(e.getX()/SCALE, e.getY()/SCALE);
+			//to rotante só passar o angulo enRadianos,e os pontos do centro para rotacionar
+			
 			double cosAngulo = Math.cos(angulo);
 			double senAngulo = Math.sin(angulo);
 			player.setShoot(true,cosAngulo,senAngulo);
@@ -438,5 +442,16 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
