@@ -21,6 +21,7 @@ import rpg.com.paifabio.entity.Enemy;
 import rpg.com.paifabio.entity.Entity;
 import rpg.com.paifabio.entity.Player;
 import rpg.com.paifabio.enums.GameState;
+import rpg.com.paifabio.enums.SaveParameter;
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.graficos.UI;
 import rpg.com.paifabio.menu.GameOverMenu;
@@ -42,6 +43,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 	private final int SCALE = 3;
 	public int curFPS =0;
 	public boolean debug=false;
+	private boolean saveGame=false;
 	
 	private int cur_level=1,max_level=7;
 	private BufferedImage image;
@@ -116,6 +118,13 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 		initialize(player,mapSprite);
 	}
 	
+	public void loadGame(String mapSprite) {
+		dificuldade=0;
+		player = new Player(0, 0, 16, 16, spritesheet);
+		player.setMask(2,0,12,16);
+		initialize(player,mapSprite);
+	}
+	
 	public void initialize(Player player,String mapSprite) {
 		entityList = new ArrayList<Entity>();
 		enemyList = new ArrayList<Enemy>();
@@ -177,6 +186,26 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 	public void tick() {
 		
 		if (gameState==GameState.NORMAL) {
+			if(this.saveGame) {
+				this.saveGame = false;
+				SaveParameter[] opt1= {
+						SaveParameter.LEVEL,
+						SaveParameter.PLAYER_WEAPON,
+						SaveParameter.PLAYER_LIFE,
+						SaveParameter.PLAYER_AMMO,
+						SaveParameter.GAME_DIFICULT};
+				int[] opt2= {
+						this.cur_level,
+						this.player.hasArma()?1:0,
+						(int)this.player.getLife(),
+						this.player.getAmmo(),
+						this.dificuldade
+						};
+				StartMenu.saveGame(opt1, opt2, 13);
+				System.out.println("Jogo salvo");
+			}
+			
+			
 			for (int i=0;i<entityList.size();i++) {
 				entityList.get(i).tick();
 			}
@@ -332,11 +361,18 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 			}else if(gameState==GameState.PAUSE){
 				pauseMenu.enter=true;
 			}
-		break;
+			break;
 		case KeyEvent.VK_Z:
 		case  KeyEvent.VK_SPACE:
-				player.jump=true;
+			player.jump=true;
 			break;
+			
+		case  KeyEvent.VK_1:
+			if(gameState==GameState.NORMAL) {
+				this.saveGame=true;
+			}
+			break;
+		
 		default:
 			break;
 		}

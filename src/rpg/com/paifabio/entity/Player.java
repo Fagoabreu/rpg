@@ -49,21 +49,18 @@ public class Player extends Entity {
 		if (life==maxLife)
 			return false;
 		
-		life+=value;
-		if(life>maxLife) 
-			life=maxLife;
+		this.setLife(this.life+=value);
 		
 		return true;
 	}
 	
 	public void takeDamage(int value) {
-		life-=value;
-		isDamaged = true;
+		this.setLife(this.life-=value);
+		this.isDamaged = true;
 		
-		if (life<=0) {
+		if (this.getLife()==0) {
 			//die
 			Sound.death.play();
-			life=0;
 			Game.getGame().setGameOver();
 			return;
 		}else {
@@ -86,8 +83,22 @@ public class Player extends Entity {
 		this.arma =true;
 	}
 	
+	public boolean hasArma() {
+		return this.arma;
+	}
+	
 	public double getLife() {
 		return life;
+	}
+	
+	public void setLife( double life) {
+		if(life>maxLife) {
+			this.life=maxLife;
+		}else if(life<0) {
+			this.life=0;
+		}else {
+			this.life=life;
+		}
 	}
 	
 	public double getMaxLife() {
