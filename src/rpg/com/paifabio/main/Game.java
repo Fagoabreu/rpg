@@ -49,6 +49,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 	public List<Enemy> enemyList;
 	public List<BulletShoot> bulletList ;
 	public Spritesheet spritesheet;
+	public int dificuldade;
 	
 	public World world;
 	
@@ -108,6 +109,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 	}
 	
 	public void initialize() {
+		dificuldade=0;
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
 		String mapSprite ="map1";
@@ -132,7 +134,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 				spritesheet,
 				entityList,
 				enemyList,
-				player
+				player,
+				dificuldade
 				);
 		World.setWorld(world);
 	}
@@ -186,6 +189,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 				cur_level++;
 				if (cur_level>max_level) {
 					cur_level=1;
+					dificuldade++;
 				}
 				initialize(player, "map"+cur_level);
 			}
@@ -329,7 +333,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 				pauseMenu.enter=true;
 			}
 		break;
-		
+		case KeyEvent.VK_Z:
+		case  KeyEvent.VK_SPACE:
+				player.jump=true;
+			break;
 		default:
 			break;
 		}
@@ -357,6 +364,11 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 		case KeyEvent.VK_DELETE:
 			this.debug = !debug;
 		break;
+		
+		case KeyEvent.VK_Z:
+		case KeyEvent.VK_SPACE:
+			player.jump=false;
+			break;
 		
 		default:
 			break;

@@ -15,6 +15,7 @@ public class Player extends Entity {
 	
 	public boolean right,left,up,down;
 	public double speed=0.8;
+	private double jumpSpeed =1.5f;
 	
 	private int frames = 0,maxFrames=10, index = 0,curDamagedFrame=0,maxDamagedFrames=20;
 	private boolean moved=false;
@@ -39,6 +40,10 @@ public class Player extends Entity {
 	private Double dirX=null,dirY=null;
 	
 	private double life=50,maxLife=50;
+	
+	public boolean enableJump=false;
+	public boolean jump=false,isJumping =false,jumpUp=false;
+	public double jumpFrames=30,jumpCur = 0;
 
 	public boolean heal(int value) {
 		if (life==maxLife)
@@ -116,7 +121,7 @@ public class Player extends Entity {
 		super(x, y, width, height, spritesheet.getSprite(32, 0));
 		super.setMask(maskX, maskY, maskW, maskH);
 		
-		//inicializa animações do player
+		//inicializa anima��es do player
 		idlePlayer = new BufferedImage[8];
 		rightPlayer = new BufferedImage[4];
 		leftPlayer = new BufferedImage[4];
@@ -169,6 +174,30 @@ public class Player extends Entity {
 	}
 	
 	public void tick() {
+		//jump
+		if(jump && enableJump) {
+			if(isJumping==false) {
+				jump=false;
+				isJumping=true;
+				jumpUp=true;
+			}
+		}
+		
+		if(isJumping) {
+			if(jumpUp) {
+				jumpCur+=jumpSpeed;
+			}else {
+				jumpCur-=jumpSpeed;
+				if(jumpCur<=0) {
+					isJumping =false;
+					jumpUp=false;
+				}
+			}
+			z=jumpCur;
+			if(jumpCur >= jumpFrames) {
+				jumpUp=false;
+			}
+		}
 		
 		//MOVIMENTA E TROCA ANIMAÇÃO
 		moved = false;
@@ -186,7 +215,7 @@ public class Player extends Entity {
 			curAnim = leftPlayer;
 			gunSpriteIndex=1;
 		}
-		if(World.getWorld().isfree((int)xNext,this.getY())){
+		if(World.getWorld().isfree((int)xNext,this.getY(),this.getZ())){
 			x=xNext;
 			super.setMaskRectangle();
 		}
@@ -212,7 +241,7 @@ public class Player extends Entity {
 			}
 		}
 		
-		if(World.getWorld().isfree(this.getX(),(int) yNext)){
+		if(World.getWorld().isfree(this.getX(),(int) yNext,this.getZ())){
 			y=yNext;
 			super.setMaskRectangle();
 		}
@@ -296,10 +325,13 @@ public class Player extends Entity {
 	
 	@Override
 	public void render (Graphics g) {
-		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y,  null);
+		this.drawSombra(g);
+		
+		//desenha o player
+		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y-this.getZ(),  null);
 		if(arma) {
 			//desenhaArma
-			g.drawImage(gunSprites[gunSpriteIndex],this.getX()-Camera.x, this.getY()-Camera.y,  null);
+			g.drawImage(gunSprites[gunSpriteIndex],this.getX()-Camera.x, this.getY()-Camera.y-this.getZ(),  null);
 		}
 		super.drawMaskRectangle(g, Color.blue);
 	}

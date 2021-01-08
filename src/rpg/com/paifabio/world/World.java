@@ -47,7 +47,8 @@ public class World {
 			Spritesheet spritesheet,
 			List<Entity> entityList,
 			List<Enemy> enemyList ,
-			Player player
+			Player player,
+			int dificuldade
 			) {
 		try {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
@@ -85,12 +86,12 @@ public class World {
 					//preenche a camanda acima
 					if(pixelAtual== 0xffff0000) {
 						//enemy
-						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.ESQUELETO);
+						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.ESQUELETO,dificuldade);
 						entityList.add(en);
 						enemyList.add(en);
 					}else if(pixelAtual== 0xffaa0000) {
 							//enemy
-							Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.LOBO);
+							Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.LOBO,dificuldade);
 							entityList.add(en);
 							enemyList.add(en);
 						
@@ -130,7 +131,7 @@ public class World {
 		return tiles[x1 + (y1*width)] instanceof WallTile;
 	}
 	
-	public boolean isfree(int xNext,int yNext) {
+	public boolean isfree(int xNext,int yNext, int z) {
 		//verifica o ponto está lovre com 1 tile de distancia
 		int x1 = xNext /tileSize;
 		int y1 = yNext /tileSize;
@@ -144,11 +145,20 @@ public class World {
 		int x4 = (xNext+tileSize-1) /tileSize;
 		int y4 = (yNext+tileSize-1) /tileSize;
 		
-		return !(tiles[x1 + (y1*width)] instanceof WallTile ||
+		if( !(tiles[x1 + (y1*width)] instanceof WallTile ||
 				tiles[x2 + (y2*width)] instanceof WallTile ||
 				tiles[x3 + (y3*width)] instanceof WallTile ||
 				tiles[x4 + (y4*width)] instanceof WallTile 		
-				);
+				)) {
+			return true;
+		}
+		
+		if (z>0) {
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	public void render(Graphics g) {

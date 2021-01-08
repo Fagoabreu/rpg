@@ -11,6 +11,7 @@ import rpg.com.paifabio.world.Camera;
 public abstract class Entity {
 	protected double x;
 	protected double y;
+	protected double z=0;
 	protected int width;
 	protected int height;
 	protected int maskX,maskY,maskW,maskH;
@@ -39,11 +40,29 @@ public abstract class Entity {
 		this.maskRectangle = new Rectangle(this.getX()+this.maskX,this.getY()+this.maskY,this.maskW,this.maskH);
 	}
 	
-	
+	protected void drawSombra(Graphics g) {
+		//desenha a sombra
+		g.setColor(new Color(0,0,0,100));
+		g.fillOval( 
+				this.getX() + this.maskX -Camera.x -2, 
+				this.getY() + this.maskY + this.maskH -Camera.y  -2,  
+				this.maskW +4,
+				4);
+	}
 	protected void drawMaskRectangle(Graphics g,Color color) {
 		if(Game.getGame().debug) {
 			g.setColor(color);
-			g.drawRect(this.getX()+this.maskX-Camera.x,this.getY()-Camera.y+this.maskY,this.maskW,this.maskH);
+			g.drawRect(
+					this.getX()+this.maskX-Camera.x,
+					this.getY()+this.maskY-Camera.y,
+					this.maskW,
+					this.maskH);
+			g.fillRect(
+					this.getX()+this.maskX-Camera.x,
+					this.getY()+this.maskY +this.maskH -Camera.y -this.getZ(),
+					this.maskW,
+					2
+					);
 		}
 	}
 
@@ -53,6 +72,10 @@ public abstract class Entity {
 
 	public int getY() {
 		return (int) y;
+	}
+	
+	public int getZ() {
+		return (int) z;
 	}
 
 	public int getWidth() {
@@ -68,19 +91,23 @@ public abstract class Entity {
 	}
 	
 	public static boolean isColliding(Entity e1, Entity e2) {
-		return e1.maskRectangle.intersects(e2.maskRectangle);
+		return (e1.maskRectangle.intersects(e2.maskRectangle) && e1.z == e2.z);
 	}
 	
 	public boolean isColliding(Entity e2) {
-		return this.maskRectangle.intersects(e2.maskRectangle);
+		if(this.maskRectangle.intersects(e2.maskRectangle) && this.z == e2.z) {
+			return true;
+		}
+		return false;
 	}
 	
-	public  boolean isColliding(int nextX, int nextY, Entity e2) {
-		Rectangle nextRectangle = new Rectangle(nextX+maskX,nextY+maskW,this.maskW,this.maskH);
-		return nextRectangle.intersects(e2.maskRectangle);
-	}
+	//public  boolean isColliding(int nextX, int nextY,int z, Entity e2) {
+	//	Rectangle nextRectangle = new Rectangle(nextX+maskX,nextY+maskW,this.maskW,this.maskH);
+	//	return (nextRectangle.intersects(e2.maskRectangle) && z==e2.z);
+	//}
 	
 	public void render(Graphics g) {
+		this.drawSombra(g);
 		g.drawImage(sprite,this.getX() -Camera.x,this.getY()-Camera.y,null);
 		drawMaskRectangle(g, Color.yellow);
 	}

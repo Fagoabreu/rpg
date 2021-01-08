@@ -13,6 +13,10 @@ import rpg.com.paifabio.world.World;
 
 public class Enemy extends Entity{
 	private double speed=0.4;
+	private int life=3;
+	private int forca=1;
+	
+	
 	private TipoEnemy tipoEnemy=null;
 	
 	private BufferedImage[] rightPlayer;
@@ -29,19 +33,20 @@ public class Enemy extends Entity{
 	
 	private int frames = 0,maxFrames=10, index = 0;
 
-	private int life=3;
 	
-	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,TipoEnemy tipoEnemy) {
-		this(x, y, width, height, spritesheet,0, 0, 0,0,tipoEnemy);
+	
+	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,TipoEnemy tipoEnemy,int dificuldade) {
+		this(x, y, width, height, spritesheet,0, 0, 0,0,tipoEnemy,dificuldade);
 	}
-	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,int maskX, int maskY, int maskW,int maskH,TipoEnemy tipoEnemy) {
+	public Enemy(int x, int y, int width, int height, Spritesheet spritesheet,int maskX, int maskY, int maskW,int maskH,TipoEnemy tipoEnemy,int dificuldade) {
 		super(x, y, width, height, spritesheet.getSpriteByPosition(2, 6));
 		
 		super.setMask(maskX, maskY, maskW, maskH);
 		this.tipoEnemy =tipoEnemy;
 		if(this.tipoEnemy == TipoEnemy.ESQUELETO) {
 			life=3;
-			speed=0.4;
+			speed=0.4 + (0.05 * dificuldade);
+			forca=1 + +dificuldade;
 			this.setMask(3,0,9,16);
 			idlePlayer = new BufferedImage[4];
 			downPlayer = new BufferedImage[4];
@@ -74,7 +79,8 @@ public class Enemy extends Entity{
 			
 		}else if(this.tipoEnemy == TipoEnemy.LOBO) {
 			life=2;
-			speed=0.6;
+			speed=0.6 + (0.05 * dificuldade);
+			forca=2+dificuldade;
 			super.setMask(0,6,14,10);
 			
 			idlePlayer = new BufferedImage[4];
@@ -137,18 +143,18 @@ public class Enemy extends Entity{
 				curAnim = leftPlayer;
 			}
 			
-			if(World.getWorld().isfree(this.getX(), (int)yNext) && !isColliding(this.getX(), (int)yNext)){
+			if(World.getWorld().isfree(this.getX(), (int)yNext,this.getZ()) && !isColliding(this.getX(), (int)yNext)){
 				y=yNext;
 				super.setMaskRectangle();
 			}
 			
-			if(World.getWorld().isfree((int)xNext, this.getY()) && !isColliding((int)xNext,this.getY())){
+			if(World.getWorld().isfree((int)xNext, this.getY(),this.getZ()) && !isColliding((int)xNext,this.getY())){
 				x=xNext;
 				super.setMaskRectangle();
 			}
 		}else {
 			if(Game.getGame().getRandonInt(10)<1) {
-				Game.getGame().getPlayer().takeDamage(1);
+				Game.getGame().getPlayer().takeDamage(forca);
 			}
 		}
 		
@@ -176,6 +182,7 @@ public class Enemy extends Entity{
 
 	@Override
 	public void render (Graphics g) {
+		this.drawSombra(g);
 		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y,  null);
 		//debug
 		super.drawMaskRectangle(g, Color.red);
