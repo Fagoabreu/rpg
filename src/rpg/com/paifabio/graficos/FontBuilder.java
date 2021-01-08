@@ -5,17 +5,23 @@ import java.awt.FontFormatException;
 import java.io.IOException;
 
 public class FontBuilder {
-	public static Font getFont(int size, boolean bold) {
+	
+	private static Font pixelfont=initFont("pixelfont.ttf");
+	
+	private static Font initFont(String fontname) {
 		try {
-			Font newFont=Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf"));
-			if(bold) {
-				return newFont.deriveFont(Font.BOLD,size);
-			}else {
-				return newFont.deriveFont(size);
-			}
+			return Font.createFont(Font.TRUETYPE_FONT, ClassLoader.getSystemClassLoader().getResourceAsStream(fontname));
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static Font getFont(int size, boolean bold) {
+			if(bold) {
+				return pixelfont.deriveFont(Font.BOLD,size);
+			}else {
+				return pixelfont.deriveFont(size);
+			}
 	}
 }

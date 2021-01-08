@@ -88,8 +88,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener{
 		this.gameState=GameState.MENU;
 	}
 	public void setInitGame() {
-		this.gameState=GameState.NORMAL;
 		initialize();
+		this.gameState=GameState.NORMAL;
 	}
 	
 	public void saveGame() {

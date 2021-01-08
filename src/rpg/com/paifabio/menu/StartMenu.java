@@ -1,7 +1,6 @@
 package rpg.com.paifabio.menu;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import rpg.com.paifabio.enums.SaveParameter;
+import rpg.com.paifabio.graficos.FontBuilder;
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.sound.Sound;
 
@@ -180,7 +180,7 @@ public class StartMenu {
 		g2.fillRect(0, 0, width*scale, height*scale);
 		
 		//titulo
-		g2.setFont(new Font("arial",Font.BOLD,16*scale));
+		g2.setFont(FontBuilder.getFont(30*scale, true));
 		g2.setColor(Color.black);
 		g2.drawString("Torre das Caveiras", (width-180)/2*scale +4 ,(40)*scale +4);
 		g2.setColor(Color.yellow);
@@ -188,7 +188,7 @@ public class StartMenu {
 		
 		
 		//rodapé
-		g2.setFont(new Font("arial",Font.BOLD,4*scale));
+		g2.setFont(FontBuilder.getFont(8*scale, true));
 		g2.setColor(Color.black);
 		g2.drawString("Por Fabio Gomes de Abreu", (width-70)*scale +1 ,(height-15)*scale +1);
 		g2.drawString("para game JAAJ V", (width-70)*scale +1,(height-10)*scale +1);
@@ -204,11 +204,11 @@ public class StartMenu {
 			Color colorText;
 			if(i==currentOption) {	
 				colorText = Color.yellow;
-				g2.setFont(new Font("arial",Font.BOLD,11*scale));
+				g2.setFont(FontBuilder.getFont(22*scale, true));
 				g2.drawString("->", (25)*scale/2 ,((height )*scale/2)+ (i*30));
 			}else {
 				colorText = Color.white;
-				g2.setFont(new Font("arial",Font.BOLD,8*scale));
+				g2.setFont(FontBuilder.getFont(16*scale, true));
 			}
 			g2.setColor(Color.black);
 			g2.drawString(options[i], (60*scale/2)+2 ,((height )*scale/2)+ (i*30)+2);

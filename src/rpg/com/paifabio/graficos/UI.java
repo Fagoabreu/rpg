@@ -1,7 +1,6 @@
 package rpg.com.paifabio.graficos;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 
 import rpg.com.paifabio.entity.Player;
@@ -26,7 +25,7 @@ public class UI {
 	public void renderTexts (Graphics g) {
 		Player p = Game.getGame().getPlayer();
 		g.setColor(Color.white);
-		g.setFont(new Font("arial",Font.BOLD,8*scale));
+		g.setFont(FontBuilder.getFont(16*scale, true));
 		g.drawString(((int)p.getLife())+" / "+ ((int)p.getMaxLife()), 9*scale, 11*scale);
 		g.drawString("Munição: " + p.getAmmo() + "/" + p.getMaxAmmo(), 9*scale, (Game.getGame().HEIGHT -6) * scale);
 		

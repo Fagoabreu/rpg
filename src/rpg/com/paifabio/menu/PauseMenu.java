@@ -1,10 +1,10 @@
 package rpg.com.paifabio.menu;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import rpg.com.paifabio.graficos.FontBuilder;
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.sound.Sound;
 
@@ -73,7 +73,7 @@ public class PauseMenu {
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setColor(new Color(0,0,0,100));
 		g2.fillRect(0, 0, width*scale, height*scale);
-		g2.setFont(new Font("arial",Font.BOLD,13*scale));
+		g2.setFont(FontBuilder.getFont(26*scale, true));
 		g2.setColor(Color.yellow);
 		g2.drawString("Estatua!", (width-60)/2*scale ,(50)*scale );
 		
@@ -81,11 +81,11 @@ public class PauseMenu {
 			Color colorText;
 			if(i==currentOption) {	
 				colorText = Color.yellow;
-				g2.setFont(new Font("arial",Font.BOLD,11*scale));
+				g2.setFont(FontBuilder.getFont(22*scale, true));
 				g2.drawString("->", (25)*scale/2 ,((height )*scale/2)+ (i*30));
 			}else {
 				colorText = Color.white;
-				g2.setFont(new Font("arial",Font.BOLD,8*scale));
+				g2.setFont(FontBuilder.getFont(16*scale, true));
 			}
 			g2.setColor(Color.black);
 			g2.drawString(options[i], (60*scale/2)+2 ,((height )*scale/2)+ (i*30)+2);
@@ -95,11 +95,11 @@ public class PauseMenu {
 		}
 		
 		for(int i =0; i<comandos.length;i++) {
-			g2.setFont(new Font("arial",Font.BOLD,4*scale));
+			g2.setFont(FontBuilder.getFont(8*scale, true));
 			g2.setColor(Color.black);
-			g2.drawString(comandos[i], ((width-70)*scale)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.drawString(comandos[i], ((width-80)*scale)+2 ,((height )*scale/2)+ (i*30)+2);
 			g2.setColor(Color.white);
-			g2.drawString(comandos[i], ((width-70)*scale) ,((height )*scale/2)+ (i*30));
+			g2.drawString(comandos[i], ((width-80)*scale) ,((height )*scale/2)+ (i*30));
 		}
 	}
 }
