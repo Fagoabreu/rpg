@@ -22,6 +22,7 @@ public class PauseMenu {
 	
 	private final String[] options = {
 			"continue",
+			"salvar jogo",
 			"sair"};
 	private int currentOption,maxOption;
 	public boolean up,down,enter;
@@ -60,6 +61,8 @@ public class PauseMenu {
 			Sound.menu.play();
 			if(options[currentOption].equalsIgnoreCase("continue")) {
 				Game.getGame().setContinueGame();
+			}else if(options[currentOption].equalsIgnoreCase("salvar jogo")) {
+				Game.getGame().saveGame();
 			}else if(options[currentOption].equalsIgnoreCase("sair")) {
 				Game.getGame().setStartMenu();
 			}

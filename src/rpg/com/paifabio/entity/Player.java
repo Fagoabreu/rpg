@@ -41,9 +41,9 @@ public class Player extends Entity {
 	
 	private double life=50,maxLife=50;
 	
-	public boolean enableJump=false;
-	public boolean jump=false,isJumping =false,jumpUp=false;
-	public double jumpFrames=30,jumpCur = 0;
+	private boolean enableJump=true;
+	private boolean jump=false,isJumping =false,jumpUp=false;
+	private double jumpFrames=30,jumpCur = 0;
 
 	public boolean heal(int value) {
 		if (life==maxLife)
@@ -124,6 +124,10 @@ public class Player extends Entity {
 		this.dirY=dirY;
 	}
 	
+	public void setJump(boolean value) {
+		this.jump=true;
+	}
+	
 	public Player(int x, int y, int width, int height,Spritesheet spritesheet) {
 		this(x, y, width,  height,spritesheet,0,0,width,height);	
 	}
@@ -185,29 +189,28 @@ public class Player extends Entity {
 	}
 	
 	public void tick() {
-		//jump
-		if(jump && enableJump) {
-			if(isJumping==false) {
-				jump=false;
-				isJumping=true;
-				jumpUp=true;
+		//jump é a varialvel que inicia o pulo
+		if(jump && enableJump) { //criei o enablejump para desabilitar o pulo do personagem
+			jump=false; //já usei o flag posso desligalo evitando um novo pulo após soltar o botao
+			if(isJumping==false) {//verifica se o personagem não está no meio de um pulo
+				isJumping=true; //inicia o processo de pular
+				jumpUp=true;    //inicia o pulo subindo
 			}
 		}
 		
-		if(isJumping) {
-			if(jumpUp) {
+		if(isJumping) { //executa o pulo
+			if(jumpUp) {//Jumpup = true siginifica que está subindo
 				jumpCur+=jumpSpeed;
-			}else {
-				jumpCur-=jumpSpeed;
-				if(jumpCur<=0) {
-					isJumping =false;
+				if(jumpCur >= jumpFrames) {//quando jumpCur passar a altura(jumpFrames) tem que descer
 					jumpUp=false;
 				}
+			}else { //se o jumpup =falso o personagem está caindo(substuindo o Jump Down)
+				jumpCur-=jumpSpeed;
+				if(jumpCur<=0) {//verifica se o personagem chegou ao chão e finaliza o pulo
+					isJumping =false;
+				}
 			}
-			z=jumpCur;
-			if(jumpCur >= jumpFrames) {
-				jumpUp=false;
-			}
+			z=jumpCur; //altera a altura do jogador
 		}
 		
 		//MOVIMENTA E TROCA ANIMAÃ‡ÃƒO

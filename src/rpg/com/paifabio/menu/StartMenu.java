@@ -171,7 +171,7 @@ public class StartMenu {
 			int backHeight = backImage.getHeight();
 			g2.drawImage(backImage,0,0, backWidth*2*scale, backHeight*2*scale, null);
 		} catch (IOException e) {
-			System.out.println("NÃ£o foi possivel localizar a imagem de fundo do menu");
+			System.out.println("Não foi possivel localizar a imagem de fundo do menu");
 			e.printStackTrace();
 		}
 		
@@ -199,7 +199,7 @@ public class StartMenu {
 		g2.drawString("para game JAAJ V", (width-70)*scale ,(height-10)*scale);
 		g2.drawString("Agradecimento a Danki Code", (width-70)*scale ,(height-5)*scale);
 						
-		//opÃ§Ãµes
+		//opções
 		for (int i=0;i<=maxOption;i++) {
 			Color colorText;
 			if(i==currentOption) {	

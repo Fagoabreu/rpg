@@ -54,9 +54,6 @@ public class World {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
 			width = map.getWidth();
 			height = map.getHeight();
-			//List<Entity> entityList = Game.getGame().entityList;
-			//List<Enemy> enemyList = Game.getGame().enemyList;
-			//Player player = Game.getGame().getPlayer();
 			
 			int[] pixels = new int[width * height];
 			tiles = new Tile[pixels.length];
