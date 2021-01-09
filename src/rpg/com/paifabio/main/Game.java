@@ -11,10 +11,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import rpg.com.paifabio.entity.BulletShoot;
@@ -64,6 +67,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public StartMenu startMenu;
 	public GameOverMenu gameOverMenu;
 	public PauseMenu pauseMenu;
+	
+	public int[] pixels;
+	public int[] lightMapPixels;
+	public BufferedImage lightMap;
 	
 	private GameState gameState=GameState.MENU;
 	
@@ -122,6 +129,15 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		//inicializa objetos
 		ui = new UI(SCALE);
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		try {
+			lightMap = ImageIO.read(getClass().getResource("/lightmap.png"));
+			lightMapPixels= new int[lightMap.getWidth()*lightMap.getHeight()];
+			lightMap.getRGB(0, 0,lightMap.getWidth(),lightMap.getHeight(),lightMapPixels,0,lightMap.getWidth());
+		}catch (IOException e) {
+			System.out.println("Falha ao carregar o lightmap");
+			e.printStackTrace();
+		}
+		pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		startMenu = new StartMenu(WIDTH,HEIGHT,SCALE); 
 		gameOverMenu = new GameOverMenu(WIDTH, HEIGHT, SCALE);
@@ -232,6 +248,17 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		}
 	}
 	
+	public void applyLight() {
+		for(int xx=0;xx<this.WIDTH;xx++) {
+			for(int yy=0;yy<this.HEIGHT;yy++) {
+				if(lightMapPixels[xx+(yy * this.WIDTH)] == 0xffffffff) {
+					
+					pixels[xx+(yy * this.WIDTH)] = 0;
+				}
+			}
+		}
+	}
+	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
 		if(bs==null) {
@@ -258,12 +285,17 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		for(BulletShoot b: bulletList) {
 			b.render(g);
 		}
+		
+		//aplica lightmap
+		applyLight();
+		
 		//desenha o UI
 		ui.renderImages(g);
 		
-		//chama a funÃ§Ã£o para renderizar
+		//chama a função para renderizar
 		g.dispose();
 		g = bs.getDrawGraphics();
+		
 		g.drawImage(image, 0, 0,WIDTH* SCALE,HEIGHT*SCALE, null);
 		ui.renderTexts(g);
 		
@@ -310,8 +342,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -421,7 +452,6 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			double angulo = player.getAnguloRad(e.getX()/SCALE, e.getY()/SCALE);
 			//to rotante só passar o angulo enRadianos,e os pontos do centro para rotacionar
-			
 			double cosAngulo = Math.cos(angulo);
 			double senAngulo = Math.sin(angulo);
 			player.setShoot(true,cosAngulo,senAngulo);
@@ -437,21 +467,14 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
-		
-	}
+	public void mouseDragged(MouseEvent e) {}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseMoved(MouseEvent e) {}
 }
