@@ -15,6 +15,7 @@ public class Enemy extends Entity{
 	private double speed=0.4;
 	private int life=3;
 	private int forca=1;
+	private int distanciaVisao=100;
 	
 	
 	private TipoEnemy tipoEnemy=null;
@@ -32,6 +33,8 @@ public class Enemy extends Entity{
 	private int curDamagedFrame=0,maxDamagedFrames = 10;
 	
 	private int frames = 0,maxFrames=10, index = 0;
+	
+	private boolean iniciaPerseguicao=false;
 
 	
 	
@@ -121,40 +124,52 @@ public class Enemy extends Entity{
 
 		curAnim=idlePlayer;
 		
-		if(!this.isCollidingWithPlayer()) {
-			//chase player
-			double xNext = x;
-			double yNext = y;
-			Player playerRef = Game.getGame().getPlayer(); 
-					
-			if((int)y<playerRef.getY()) {
-				yNext+=speed;
-				curAnim = downPlayer;
-			}else if((int)y>playerRef.getY()) {
-				yNext-=speed;
-				curAnim = downPlayer;
-			}
+		Player playerRef = Game.getGame().getPlayer(); 
+		if(iniciaPerseguicao==false) {
 			
-			if((int)x<playerRef.getX()) {
-				xNext+=speed;
-				curAnim = rightPlayer;
-			}else if((int)x>playerRef.getX()) {
-				xNext-=speed;
-				curAnim = leftPlayer;
-			}
-			
-			if(World.getWorld().isfree(this.getX(), (int)yNext,this.getZ()) && !isColliding(this.getX(), (int)yNext)){
-				y=yNext;
-				super.setMaskRectangle();
-			}
-			
-			if(World.getWorld().isfree((int)xNext, this.getY(),this.getZ()) && !isColliding((int)xNext,this.getY())){
-				x=xNext;
-				super.setMaskRectangle();
+		}
+		
+		
+		if(!iniciaPerseguicao) {
+			curAnim = idlePlayer;
+			if(this.calculateDistance(playerRef)<distanciaVisao) {
+				iniciaPerseguicao=true;
 			}
 		}else {
-			if(Game.getGame().getRandonInt(10)<1) {
-				Game.getGame().getPlayer().takeDamage(forca);
+			if(!this.isCollidingWithPlayer()) {
+				//chase player
+				double xNext = x;
+				double yNext = y;
+						
+				if((int)y<playerRef.getY()) {
+					yNext+=speed;
+					curAnim = downPlayer;
+				}else if((int)y>playerRef.getY()) {
+					yNext-=speed;
+					curAnim = downPlayer;
+				}
+				
+				if((int)x<playerRef.getX()) {
+					xNext+=speed;
+					curAnim = rightPlayer;
+				}else if((int)x>playerRef.getX()) {
+					xNext-=speed;
+					curAnim = leftPlayer;
+				}
+				
+				if(World.getWorld().isfree(this.getX(), (int)yNext,this.getZ()) && !isColliding(this.getX(), (int)yNext)){
+					y=yNext;
+					super.setMaskRectangle();
+				}
+				
+				if(World.getWorld().isfree((int)xNext, this.getY(),this.getZ()) && !isColliding((int)xNext,this.getY())){
+					x=xNext;
+					super.setMaskRectangle();
+				}
+			}else {
+				if(Game.getGame().getRandonInt(10)<1) {
+					Game.getGame().getPlayer().takeDamage(forca);
+				}
 			}
 		}
 		

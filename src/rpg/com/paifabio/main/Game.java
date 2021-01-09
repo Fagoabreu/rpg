@@ -419,7 +419,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
-			double angulo = player.getRadToPoint(e.getX()/SCALE, e.getY()/SCALE);
+			double angulo = player.getAnguloRad(e.getX()/SCALE, e.getY()/SCALE);
 			//to rotante só passar o angulo enRadianos,e os pontos do centro para rotacionar
 			
 			double cosAngulo = Math.cos(angulo);

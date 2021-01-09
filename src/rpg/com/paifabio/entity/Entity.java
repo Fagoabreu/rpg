@@ -90,6 +90,15 @@ public abstract class Entity {
 		
 	}
 	
+	public double calculateDistance(Entity e2) {
+		return calculateDistance(this.getX(),this.getY(), e2.getX(), e2.getY());
+	}
+	
+	public double calculateDistance(int x1,int y1, int x2, int y2) {
+		
+		return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+	}
+	
 	public static boolean isColliding(Entity e1, Entity e2) {
 		return (e1.maskRectangle.intersects(e2.maskRectangle) && e1.z == e2.z);
 	}
@@ -128,10 +137,10 @@ public abstract class Entity {
 		this.height = height;
 	}
 	
-	public double getRadToPoint(int mx, int my) {
+	public double getAnguloRad(int mx, int my) {
 		return Math.atan2(my-(this.getY()+(this.getHeight()/2) -Camera.y)  , mx -(this.getX()+(this.getWidth()/2) -Camera.x ));
 	}
-	public double getAngleToPoint(int mx, int my) {
-		return Math.toDegrees(getRadToPoint(mx, my));
+	public double getAnguloGraus(int mx, int my) {
+		return Math.toDegrees(getAnguloRad(mx, my));
 	}
 }
