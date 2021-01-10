@@ -121,6 +121,10 @@ public class World {
 		}
 	}
 	
+	public Tile getTile(int x, int y) {
+		return tiles[x+(y*this.width)];
+	}
+	
 	public boolean isWall(int x,int y) {
 		//verifica o ponto está lovre com 1 tile de distancia
 		int x1 = x /tileSize;

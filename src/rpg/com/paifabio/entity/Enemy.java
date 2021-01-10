@@ -10,6 +10,8 @@ import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
+import rpg.com.paifabio.world.ai.AStar;
+import rpg.com.paifabio.world.ai.Vector2i;
 
 public class Enemy extends Entity{
 	private double speed=0.4;
@@ -125,11 +127,41 @@ public class Enemy extends Entity{
 		curAnim=idlePlayer;
 		
 		Player playerRef = Game.getGame().getPlayer(); 
-		if(iniciaPerseguicao==false) {
-			
+		//perseguePlayerSimples(playerRef);
+		perseguePlayerAStar(playerRef);
+		
+		if(isDamaged) {
+			curDamagedFrame++;
+			curAnim=damagePlayer;
+			if (curDamagedFrame>=maxDamagedFrames) {
+				isDamaged=false;
+				curDamagedFrame=0;
+			}
 		}
 		
+		//CONTROLA A TROCA DE  FRAMES
+		frames++;
+		if(frames == maxFrames) {
+			frames=0;
+			index++;
+		}
 		
+		if(index>=curAnim.length) {
+			index=0;
+		}
+		
+	}
+	
+	public void perseguePlayerAStar(Player playerRef) {
+		if(path==null|| path.size()==0) {
+			Vector2i start=new Vector2i((int)(x/16),(int)(y/16));
+			Vector2i end =new Vector2i((int)(playerRef.x/16),(int)(playerRef.y/16));
+			path = AStar.findPath(Game.getGame().world, start, end);
+		}
+		followPath(path);
+	}
+	
+	public void perseguePlayerSimples(Player playerRef) {
 		if(!iniciaPerseguicao) {
 			curAnim = idlePlayer;
 			if(this.calculateDistance(playerRef)<distanciaVisao) {
@@ -166,33 +198,13 @@ public class Enemy extends Entity{
 					x=xNext;
 					super.setMaskRectangle();
 				}
+				
 			}else {
 				if(Game.getGame().getRandonInt(10)<1) {
 					Game.getGame().getPlayer().takeDamage(forca);
 				}
 			}
 		}
-		
-		if(isDamaged) {
-			curDamagedFrame++;
-			curAnim=damagePlayer;
-			if (curDamagedFrame>=maxDamagedFrames) {
-				isDamaged=false;
-				curDamagedFrame=0;
-			}
-		}
-		
-		//CONTROLA A TROCA DE  FRAMES
-		frames++;
-		if(frames == maxFrames) {
-			frames=0;
-			index++;
-		}
-		
-		if(index>=curAnim.length) {
-			index=0;
-		}
-		
 	}
 
 	@Override

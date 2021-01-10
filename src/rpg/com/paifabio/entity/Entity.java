@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.world.Camera;
+import rpg.com.paifabio.world.ai.Node;
+import rpg.com.paifabio.world.ai.Vector2i;
 
 public abstract class Entity {
 	protected double x;
@@ -16,6 +19,7 @@ public abstract class Entity {
 	protected int height;
 	protected int maskX,maskY,maskW,maskH;
 	protected Rectangle maskRectangle;
+	protected List<Node>path;
 	
 	private BufferedImage sprite;
 	
@@ -50,7 +54,7 @@ public abstract class Entity {
 				4);
 	}
 	protected void drawMaskRectangle(Graphics g,Color color) {
-		if(Game.getGame().debug) {
+		if(Game.getGame().enableDebug) {
 			g.setColor(color);
 			g.drawRect(
 					this.getX()+this.maskX-Camera.x,
@@ -86,9 +90,7 @@ public abstract class Entity {
 		return height;
 	}
 	
-	public void tick() {
-		
-	}
+	public void tick() {}
 	
 	public double calculateDistance(Entity e2) {
 		return calculateDistance(this.getX(),this.getY(), e2.getX(), e2.getY());
@@ -97,6 +99,30 @@ public abstract class Entity {
 	public double calculateDistance(int x1,int y1, int x2, int y2) {
 		
 		return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+	}
+	
+	public void followPath(List<Node> path) {
+		if(path!=null) {
+			if(path.size()>0) {
+				Vector2i target =path.get(path.size()-1).tile;
+				if(x<target.x *16) {
+					x++;
+				}else if(x>target.x *16) {
+					x--;
+				}
+				
+				if(y<target.y *16) {
+					y++;
+				}else if(y>target.y *16) {
+					y--;
+				}
+				
+				if(x ==target.x *16 && y== target.y *16) {
+					path.remove(path.size() -1);
+				}
+				
+			}
+		}
 	}
 	
 	public static boolean isColliding(Entity e1, Entity e2) {
@@ -109,11 +135,6 @@ public abstract class Entity {
 		}
 		return false;
 	}
-	
-	//public  boolean isColliding(int nextX, int nextY,int z, Entity e2) {
-	//	Rectangle nextRectangle = new Rectangle(nextX+maskX,nextY+maskW,this.maskW,this.maskH);
-	//	return (nextRectangle.intersects(e2.maskRectangle) && z==e2.z);
-	//}
 	
 	public void render(Graphics g) {
 		this.drawSombra(g);

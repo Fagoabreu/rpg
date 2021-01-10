@@ -46,7 +46,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public final int HEIGHT = 160;//160//240//320
 	private final int SCALE = 3;
 	public int curFPS =0;
-	public boolean debug=false;
+	public boolean enableDebug=false;
+	public boolean enableLight=false;
 	
 	private int cur_level=1,max_level=7;
 	private BufferedImage image;
@@ -287,7 +288,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		}
 		
 		//aplica lightmap
-		applyLight();
+		if(enableLight) {
+			applyLight();
+		}
 		
 		//desenha o UI
 		ui.renderImages(g);
@@ -404,6 +407,11 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 				saveGame();
 			}
 			break;
+		case  KeyEvent.VK_2:
+			if(gameState==GameState.NORMAL) {
+				enableLight = !enableLight;
+			}
+			break;
 		
 		default:
 			break;
@@ -430,7 +438,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 			player.down=false;
 			break;
 		case KeyEvent.VK_DELETE:
-			this.debug = !debug;
+			this.enableDebug = !enableDebug;
 		break;
 		
 		case KeyEvent.VK_Z:
