@@ -30,7 +30,7 @@ public class UI {
 		g.drawString("Munição: " + p.getAmmo() + "/" + p.getMaxAmmo(), 9*scale, (Game.getGame().HEIGHT -6) * scale);
 		
 		if(Game.getGame().enableDebug) {
-			g.drawString("FPS:" + Game.getGame().curFPS, (Game.getGame().WIDTH-60)*scale, 11*scale);
+			g.drawString("FPS:" + Game.getGame().curFPS, (Game.getGame().WIDTH/2)*scale, 11*scale);
 			g.drawString("Debug: ON", (Game.getGame().WIDTH-60)*scale, (Game.getGame().HEIGHT-6)*scale);
 		}
 		
