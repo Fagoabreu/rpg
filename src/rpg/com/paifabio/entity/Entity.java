@@ -101,28 +101,35 @@ public abstract class Entity {
 		return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 	}
 	
-	public void followPath(List<Node> path) {
+	public Vector2i followPath(List<Node> path,double speed) {
+		Vector2i direcao = new Vector2i(0,0);
 		if(path!=null) {
 			if(path.size()>0) {
 				Vector2i target =path.get(path.size()-1).tile;
-				if(x<target.x *16) {
-					x++;
-				}else if(x>target.x *16) {
-					x--;
+				if(x+speed<target.x *16){
+					x+=speed;
+					direcao.x=1;
+				}else if(x-speed>target.x *16) {
+					x-=speed;
+					direcao.x=(-1);
 				}
 				
-				if(y<target.y *16) {
-					y++;
-				}else if(y>target.y *16) {
-					y--;
+				if(y+speed<target.y *16){
+					y+=speed;
+					direcao.y=1;
+				}else if(y-speed>target.y *16 ){
+					y-=speed;
+					direcao.y=(-1);
 				}
 				
-				if(x ==target.x *16 && y== target.y *16) {
+				if(Math.abs(x -(target.x *16))<=speed+1  &&  Math.abs(y -(target.y *16))<=speed+1) {
 					path.remove(path.size() -1);
 				}
 				
 			}
 		}
+		
+		return direcao;
 	}
 	
 	public static boolean isColliding(Entity e1, Entity e2) {
@@ -133,6 +140,19 @@ public abstract class Entity {
 		if(this.maskRectangle.intersects(e2.maskRectangle) && this.z == e2.z) {
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean isCollidingEnemy(int xNext, int yNext) {
+		Rectangle currentEntity = new Rectangle(xNext+maskX,yNext+maskY,maskW,maskH);
+		for (Enemy e: Game.getGame().enemyList) {
+			if(e==this) 
+				continue;
+			if(currentEntity.intersects(e.maskRectangle)) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	

@@ -2,7 +2,6 @@ package rpg.com.paifabio.entity;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import rpg.com.paifabio.enums.TipoEnemy;
@@ -11,6 +10,7 @@ import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
 import rpg.com.paifabio.world.ai.AStar;
+import rpg.com.paifabio.world.ai.Node;
 import rpg.com.paifabio.world.ai.Vector2i;
 
 public class Enemy extends Entity{
@@ -127,8 +127,24 @@ public class Enemy extends Entity{
 		curAnim=idlePlayer;
 		
 		Player playerRef = Game.getGame().getPlayer(); 
-		//perseguePlayerSimples(playerRef);
-		perseguePlayerAStar(playerRef);
+		if(!iniciaPerseguicao) {
+			curAnim = idlePlayer;
+			if(this.calculateDistance(playerRef)<distanciaVisao) {
+				iniciaPerseguicao=true;
+			}
+		}else {
+			if(!this.isCollidingWithPlayer()) {
+				//perseguePlayerSimples(playerRef);
+				perseguePlayerAStar(playerRef);
+			}else {
+				if(Game.getGame().getRandonInt(10)<1) {
+					Game.getGame().getPlayer().takeDamage(forca);
+				}
+				
+				
+			}
+		}
+		
 		
 		if(isDamaged) {
 			curDamagedFrame++;
@@ -158,53 +174,51 @@ public class Enemy extends Entity{
 			Vector2i end =new Vector2i((int)(playerRef.x/16),(int)(playerRef.y/16));
 			path = AStar.findPath(Game.getGame().world, start, end);
 		}
-		followPath(path);
+		Vector2i direcao = followPath(path,speed);
+		if(direcao.x==0 && direcao.y==0) {
+			curAnim = idlePlayer;
+		}else if (direcao.x==1 ) {
+			curAnim = rightPlayer;
+		}else if (direcao.x==(-1) ) {
+			curAnim = leftPlayer;
+		}else if(direcao.y==1 || direcao.y==(-1)){
+			curAnim = downPlayer;
+		}
+		
+		super.setMaskRectangle();
 	}
 	
 	public void perseguePlayerSimples(Player playerRef) {
-		if(!iniciaPerseguicao) {
-			curAnim = idlePlayer;
-			if(this.calculateDistance(playerRef)<distanciaVisao) {
-				iniciaPerseguicao=true;
-			}
-		}else {
-			if(!this.isCollidingWithPlayer()) {
-				//chase player
-				double xNext = x;
-				double yNext = y;
-						
-				if((int)y<playerRef.getY()) {
-					yNext+=speed;
-					curAnim = downPlayer;
-				}else if((int)y>playerRef.getY()) {
-					yNext-=speed;
-					curAnim = downPlayer;
-				}
+		//chase player
+		double xNext = x;
+		double yNext = y;
 				
-				if((int)x<playerRef.getX()) {
-					xNext+=speed;
-					curAnim = rightPlayer;
-				}else if((int)x>playerRef.getX()) {
-					xNext-=speed;
-					curAnim = leftPlayer;
-				}
-				
-				if(World.getWorld().isfree(this.getX(), (int)yNext,this.getZ()) && !isColliding(this.getX(), (int)yNext)){
-					y=yNext;
-					super.setMaskRectangle();
-				}
-				
-				if(World.getWorld().isfree((int)xNext, this.getY(),this.getZ()) && !isColliding((int)xNext,this.getY())){
-					x=xNext;
-					super.setMaskRectangle();
-				}
-				
-			}else {
-				if(Game.getGame().getRandonInt(10)<1) {
-					Game.getGame().getPlayer().takeDamage(forca);
-				}
-			}
+		if((int)y<playerRef.getY()) {
+			yNext+=speed;
+			curAnim = downPlayer;
+		}else if((int)y>playerRef.getY()) {
+			yNext-=speed;
+			curAnim = downPlayer;
 		}
+		
+		if((int)x<playerRef.getX()) {
+			xNext+=speed;
+			curAnim = rightPlayer;
+		}else if((int)x>playerRef.getX()) {
+			xNext-=speed;
+			curAnim = leftPlayer;
+		}
+		
+		if(World.getWorld().isfree(this.getX(), (int)yNext,this.getZ()) && !isCollidingEnemy(this.getX(), (int)yNext)){
+			y=yNext;
+			super.setMaskRectangle();
+		}
+		
+		if(World.getWorld().isfree((int)xNext, this.getY(),this.getZ()) && !isCollidingEnemy((int)xNext,this.getY())){
+			x=xNext;
+			super.setMaskRectangle();
+		}
+				
 	}
 
 	@Override
@@ -213,6 +227,30 @@ public class Enemy extends Entity{
 		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y,  null);
 		//debug
 		super.drawMaskRectangle(g, Color.red);
+		//desenha path
+		drawpath(g);
+	}
+	
+	private void drawpath(Graphics g) {
+		if(Game.getGame().enableDebug &&  path!=null && path.size()>0) {
+			Vector2i posicaoAtual = path.get(path.size()-1).tile; 
+			g.drawLine(
+					this.getX() +8 -Camera.x,
+					this.getY() +8 -Camera.y,
+					posicaoAtual.x*16 +8 -Camera.x,
+					posicaoAtual.y*16 +8 -Camera.y);
+			
+			for(int i =path.size()-2;i>=0;i--) {
+				Node target= path.get(i);
+				Vector2i posicaoDestino = target.tile;
+				g.drawLine(
+						posicaoAtual.x*16 +8 -Camera.x, 
+						posicaoAtual.y*16 +8 -Camera.y, 
+						posicaoDestino.x*16 +8 -Camera.x, 
+						posicaoDestino.y*16 +8 -Camera.y);
+				posicaoAtual = posicaoDestino;
+			}
+		}
 	}
 	
 	public boolean isCollidingWithPlayer() {
@@ -220,18 +258,6 @@ public class Enemy extends Entity{
 		return super.isColliding(player);
 	}
 	
-	public boolean isColliding(int xNext, int yNext) {
-		Rectangle currentEnemy = new Rectangle(xNext+maskX,yNext+maskY,maskW,maskH);
-		for (Enemy e: Game.getGame().enemyList) {
-			if(e==this) 
-				continue;
-			if(currentEnemy.intersects(e.maskRectangle)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	public void takeDamage(int value) {
 		life-=value;

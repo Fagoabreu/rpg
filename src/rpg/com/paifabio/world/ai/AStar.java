@@ -70,13 +70,13 @@ public class AStar {
 				if(tile instanceof WallTile) continue;
 				if(i==0) {
 					Tile test1 = World.getWorld().getTile(x+xi+1, y+yi);
-					Tile test2 = World.getWorld().getTile(x+xi+1, y+yi);//possivel erro
+					Tile test2 = World.getWorld().getTile(x+xi, y+yi+1);//possivel erro
 						if(test1 instanceof WallTile || test2 instanceof WallTile) {
 							continue;
 						}
 				}else if(i==2) {
-					Tile test1 = World.getWorld().getTile(x+xi+1, y+yi);
-					Tile test2 = World.getWorld().getTile(x+xi, y+yi);//possivel erro
+					Tile test1 = World.getWorld().getTile(x+xi-1, y+yi);
+					Tile test2 = World.getWorld().getTile(x+xi, y+yi+1);//possivel erro
 						if(test1 instanceof WallTile || test2 instanceof WallTile) {
 							continue;
 						}
