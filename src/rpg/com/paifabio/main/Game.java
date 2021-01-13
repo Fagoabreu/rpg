@@ -72,7 +72,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	
 	public int[] pixels;
 	public int[] lightMapPixels;
+	public int[] miniMapPixels;
+	
 	public BufferedImage lightMap;
+	public BufferedImage miniMap;
 	
 	private GameState gameState=GameState.MENU;
 	
@@ -185,6 +188,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 				dificuldade
 				);
 		World.setWorld(world);
+		
+		miniMap = new BufferedImage(world.width, world.height, BufferedImage.TYPE_INT_RGB);
+		miniMapPixels = ((DataBufferInt)miniMap.getRaster().getDataBuffer()).getData();
 	}
 	
 	public Player getPlayer() {
@@ -303,6 +309,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		
 		g.drawImage(image, 0, 0,WIDTH* SCALE,HEIGHT*SCALE, null);
 		ui.renderTexts(g);
+		
+		world.renderMiniMap(miniMapPixels,player);
+		g.drawImage(miniMap,(WIDTH-world.width-2)*SCALE,2*SCALE,world.width*SCALE,world.height*SCALE,null);
 		
 		if(gameState==GameState.GAME_OVER) {
 			gameOverMenu.render(g);

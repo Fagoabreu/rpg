@@ -185,4 +185,29 @@ public class World {
 			}
 		}
 	}
+	
+	public void renderMiniMap(int[] minimapaPixels, Player player) {
+		for(int i=0;i<minimapaPixels.length;i++) {
+			minimapaPixels[i] =0xffff0000;
+		}
+		for(int xx=0; xx<width;xx++) {
+			for(int yy=0; yy<height;yy++) {
+				int index = xx +(yy*width);
+				if(tiles[index] instanceof WallTile ) {
+					minimapaPixels[index] = 0xffffffff;
+				}else {
+					minimapaPixels[index] =  0xff000000;
+				}
+			}
+		}
+		
+		if(player!=null) {
+			int playerX = player.getX()/16;
+			int playerY = player.getY()/16;
+			
+			minimapaPixels[playerX+playerY*width] =  0xff00AAAA;
+		}
+		
+		
+	}
 }
