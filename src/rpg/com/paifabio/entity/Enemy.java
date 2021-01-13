@@ -123,12 +123,11 @@ public class Enemy extends Entity{
 	}
 	
 	public void tick() {
-
+		depth=1;
 		curAnim=idlePlayer;
 		
 		Player playerRef = Game.getGame().getPlayer(); 
 		if(!iniciaPerseguicao) {
-			curAnim = idlePlayer;
 			if(this.calculateDistance(playerRef)<distanciaVisao) {
 				iniciaPerseguicao=true;
 			}
@@ -140,8 +139,6 @@ public class Enemy extends Entity{
 				if(Game.getGame().getRandonInt(10)<1) {
 					Game.getGame().getPlayer().takeDamage(forca);
 				}
-				
-				
 			}
 		}
 		

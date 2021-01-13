@@ -189,7 +189,9 @@ public class Player extends Entity {
 	}
 	
 	public void tick() {
-		//jump é a varialvel que inicia o pulo
+		depth=2;
+		
+		//jump é a variavel que inicia o pulo
 		if(jump && enableJump) { //criei o enablejump para desabilitar o pulo do personagem
 			jump=false; //já usei o flag posso desligalo evitando um novo pulo após soltar o botao
 			if(isJumping==false) {//verifica se o personagem não está no meio de um pulo

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Comparator;
 import java.util.List;
 
 import rpg.com.paifabio.main.Game;
@@ -22,6 +23,7 @@ public abstract class Entity {
 	protected List<Node>path;
 	
 	private BufferedImage sprite;
+	protected int depth;
 	
 	public Entity(int x,int y,int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -30,6 +32,7 @@ public abstract class Entity {
 		this.height = height;
 		this.sprite = sprite;
 		this.setMask(0, 0, width, height);
+		this.depth=0;
 	}
 	
 	public void setMask(int maskX,int maskY,int maskW,int maskH ) {
@@ -39,6 +42,20 @@ public abstract class Entity {
 		this.maskH = maskH;
 		setMaskRectangle();
 	}
+	
+	public static Comparator<Entity> entitySorter = new Comparator<Entity>() {
+		@Override
+		public int compare(Entity n0, Entity n1) {
+			if(n1.depth <n0.depth)
+				return + 1;
+			
+			if(n1.depth >n0.depth)
+				return - 1;
+			
+			return 0;
+		}
+		
+	};
 	
 	protected void setMaskRectangle() {
 		this.maskRectangle = new Rectangle(this.getX()+this.maskX,this.getY()+this.maskY,this.maskW,this.maskH);
