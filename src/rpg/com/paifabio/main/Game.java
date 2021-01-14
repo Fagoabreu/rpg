@@ -48,14 +48,15 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	private final int SCALE = 3;
 	public int curFPS =0;
 	public boolean enableDebug=false;
-	public boolean enableLight=false;
+	private boolean enableLight=false;
+	private boolean enableRngMap=true;
 	
 	private int cur_level=1,max_level=7;
 	private BufferedImage image;
 	public List<Entity> entityList;
 	public List<Enemy> enemyList;
 	public List<BulletShoot> bulletList ;
-	public Spritesheet spritesheet;
+	private Spritesheet spritesheet;
 	public int dificuldade;
 	
 	public World world;
@@ -64,7 +65,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	
 	private Random rand;
 	
-	public UI ui;
+	private UI ui;
 	
 	public StartMenu startMenu;
 	public GameOverMenu gameOverMenu;
@@ -158,6 +159,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
 		String mapSprite ="map1";
+		enableRngMap=false;
 		initialize(player,mapSprite);
 	}
 	
@@ -175,7 +177,26 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		
 		entityList.add(player);
 		
-		world = new World("/"+mapSprite +".png",
+		if(enableRngMap) {
+
+			world = new World(
+					spritesheet.getSpriteByPosition(0, 0),//floor
+					spritesheet.getSpriteByPosition(1, 0),//wall
+					//spritesheet.getSpriteByPosition(0, 1),//sky
+					spritesheet.getSpriteByPosition(1, 1),//escada
+					//spritesheet.getSpriteByPosition(7, 0),//weapon
+					spritesheet.getSpriteByPosition(6, 1),//ammo
+					spritesheet.getSpriteByPosition(6, 0),//lifepack
+					spritesheet,
+					entityList,
+					enemyList,
+					player,
+					dificuldade,
+					10,
+					rand
+					);
+		}else {
+			world = new World("/"+mapSprite +".png",
 				spritesheet.getSpriteByPosition(0, 0),//floor
 				spritesheet.getSpriteByPosition(1, 0),//wall
 				spritesheet.getSpriteByPosition(0, 1),//sky
@@ -189,9 +210,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 				player,
 				dificuldade
 				);
-		World.setWorld(world);
+		}
 		
-		miniMap = new BufferedImage(world.width, world.height, BufferedImage.TYPE_INT_RGB);
+		miniMap = new BufferedImage(world.width, world.height, BufferedImage.TYPE_INT_ARGB);
 		miniMapPixels = ((DataBufferInt)miniMap.getRaster().getDataBuffer()).getData();
 	}
 	
@@ -244,8 +265,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 			if(enemyList.size()==0) {
 				cur_level++;
 				if (cur_level>max_level) {
-					cur_level=1;
+					//cur_level=1;
 					dificuldade++;
+					enableRngMap=true;
 				}
 				initialize(player, "map"+cur_level);
 			}

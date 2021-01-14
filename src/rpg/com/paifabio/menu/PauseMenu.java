@@ -74,6 +74,8 @@ public class PauseMenu {
 		g2.setColor(new Color(0,0,0,100));
 		g2.fillRect(0, 0, width*scale, height*scale);
 		g2.setFont(FontBuilder.getFont(26*scale, true));
+		g2.setColor(Color.black);
+		g2.drawString("Estatua!", (width-59)/2*scale ,(51)*scale );
 		g2.setColor(Color.yellow);
 		g2.drawString("Estatua!", (width-60)/2*scale ,(50)*scale );
 		

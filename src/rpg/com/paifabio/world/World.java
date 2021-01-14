@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -34,6 +35,123 @@ public class World {
 		World.world = world;
 	}
 	
+	public World(
+			BufferedImage floorTile,
+			BufferedImage wallTile,
+			BufferedImage escadaTile,
+			BufferedImage ammoSprite,
+			BufferedImage lifepackSprite,
+			Spritesheet spritesheet,
+			List<Entity>entityList,
+			List<Enemy>enemyList,
+			Player player,
+			int dificuldade,
+			int totalEnemies,
+			Random rand
+			) {
+		//setando parametros
+		this.width=30;
+		this.height=30;
+		int[] pixels = new int[width * height];
+		tiles = new Tile[pixels.length];
+		layer2 = new Tile[pixels.length];
+		
+		int totalAmmo = totalEnemies/2;
+		int totalLifepack = totalEnemies/3;
+		
+		
+		//posicionando o player
+		int playerX = 1;
+		int playerY = 1;
+		player.setX(playerX*tileSize);
+		player.setY(playerY*tileSize);
+		//adiciona objetos segundo layer
+		layer2[playerX + playerY*width] = new FloorTile(playerX*tileSize, playerY*tileSize, escadaTile);
+		
+		
+		//preenchendo o mapa com paredes
+		for(int xx=0;xx<width;xx++) {
+			for(int yy=0;yy<width;yy++) {
+				tiles[xx+yy*width] = new Tile(xx*tileSize,yy*tileSize, wallTile); 
+			}
+		}
+		
+		//criando o chão
+		for (int xx = 0; xx < this.width; xx++) {
+			for (int yy = 0; yy < this.height; yy++) {
+				tiles[xx+yy*this.width] = new WallTile(xx*tileSize,yy*tileSize, wallTile); 
+			}
+		}
+		
+		int dir=0;
+		int xx=1,yy=1;
+		tiles[xx+yy*width] = new FloorTile(xx*tileSize,yy*tileSize, floorTile);
+		
+		for (int i=0;i<1200;i++) {
+			if(dir==0) {
+				//direita
+				if(xx<width-2) {
+					xx++;
+				}
+			}else if(dir==1) {
+				//esquerda
+				if(xx>1) {
+					xx--;
+				}
+			}else if(dir==2) {
+				//baixo
+				if(yy<height-2) {
+					yy++;
+				}
+			}else if(dir==3) {
+				//cima
+				if(yy>1) {
+					yy--;
+				}
+			}
+			
+			//altera direção chance 30%
+			if(rand.nextInt(10)<3 ) {
+				dir= rand.nextInt(4);
+			}
+			
+			
+			//adiciona inimigos no chão chance 2% até chegar ao maximo de inimigos
+			if(Entity.calculateDistance(player.getX(), player.getY(), xx*tileSize, yy*tileSize)>20*tileSize 
+					&& totalEnemies>0 
+					&& rand.nextInt(50)<1) {
+				totalEnemies--;
+				TipoEnemy[] tiposInimigo= TipoEnemy.values();
+				TipoEnemy tipoInimigo = tiposInimigo [rand.nextInt(tiposInimigo.length)];
+				
+				addEnemy(
+						xx, 
+						yy, 
+						spritesheet,
+						tipoInimigo,
+						dificuldade,
+						entityList,
+						enemyList);
+			}
+			//adiciona municao proximo ao player 
+			if(i==1 || (totalAmmo>0 && rand.nextInt(100)<1)) {
+				totalAmmo--;
+				addAmmo(xx, yy, ammoSprite, entityList);
+			}
+			//add healthpack
+			if(i==2 || (totalLifepack>0 && rand.nextInt(100)<1)) {
+				totalLifepack--;
+				addLifePack(xx, yy, lifepackSprite, entityList);
+			}
+		
+			
+			
+			tiles[xx+yy*width] = new FloorTile(xx*tileSize,yy*tileSize, floorTile); 
+		}
+		
+		
+		World.world=this;
+	}
 	
 	public World(
 			String path, 
@@ -80,17 +198,27 @@ public class World {
 					if(pixelAtual== 0xff0000ff) {
 						layer2[index] = new FloorTile(posX*tileSize, posY*tileSize, escadaTile);
 					}
-					//preenche a camanda acima
+					//preenche as entidades
 					if(pixelAtual== 0xffff0000) {
-						//enemy
-						Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.ESQUELETO,dificuldade);
-						entityList.add(en);
-						enemyList.add(en);
+						//enemy Esqueleto
+						addEnemy(
+								posX, 
+								posY, 
+								spritesheet,
+								TipoEnemy.ESQUELETO,
+								dificuldade,
+								entityList,
+								enemyList);
 					}else if(pixelAtual== 0xffaa0000) {
-							//enemy
-							Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,TipoEnemy.LOBO,dificuldade);
-							entityList.add(en);
-							enemyList.add(en);
+						//enemy Lobo
+						addEnemy(
+								posX, 
+								posY, 
+								spritesheet,
+								TipoEnemy.LOBO,
+								dificuldade,
+								entityList,
+								enemyList);
 						
 					}else if(pixelAtual== 0xff00ff00) {
 						//weapon
@@ -103,18 +231,14 @@ public class World {
 						player.setY(posY*tileSize);
 					}else if(pixelAtual== 0xffffff00) {
 						//amo
-						Ammo ammo =new Ammo(posX*tileSize, posY*tileSize, tileSize, tileSize, ammoSprite);
-						ammo.setMask(4, 4, 7, 12);
-						entityList.add(ammo);
+						addAmmo(posX, posY, ammoSprite, entityList);
 					}else if(pixelAtual== 0xffff00ff) {
 						//lifepack
-						LifePack lp = new LifePack(posX*tileSize, posY*tileSize, tileSize, tileSize, lifepackSprite);
-						lp.setMask(3, 5, 9, 11);
-						entityList.add(lp);
+						addLifePack(posX, posY, lifepackSprite, entityList);
 					}
 				}
 			}
-			
+			World.setWorld(this);
 		} catch (IOException e) {
 			System.out.println("Falha ao carregar a imagem do mapa");
 			e.printStackTrace();
@@ -179,35 +303,53 @@ public class World {
 				if(tile!=null)
 					tile.render(g);
 				
-				tile = layer2[posX + posY * width];
-				if(tile!=null)
-					tile.render(g);
+				if(layer2!=null && layer2.length>(posX + posY * width)) {
+					tile = layer2[posX + posY * width];
+					if(tile!=null)
+						tile.render(g);
+				}
 			}
 		}
 	}
 	
 	public void renderMiniMap(int[] minimapaPixels, Player player) {
-		for(int i=0;i<minimapaPixels.length;i++) {
-			minimapaPixels[i] =0xffff0000;
-		}
 		for(int xx=0; xx<width;xx++) {
 			for(int yy=0; yy<height;yy++) {
 				int index = xx +(yy*width);
 				if(tiles[index] instanceof WallTile ) {
-					minimapaPixels[index] = 0xffffffff;
+					minimapaPixels[index] = 0x66ffffff;
 				}else {
-					minimapaPixels[index] =  0xff000000;
+					minimapaPixels[index] =  0x66000000;
 				}
 			}
 		}
 		
 		if(player!=null) {
-			int playerX = player.getX()/16;
-			int playerY = player.getY()/16;
+			int playerX = player.getX()/tileSize;
+			int playerY = player.getY()/tileSize;
 			
-			minimapaPixels[playerX+playerY*width] =  0xff00AAAA;
+			minimapaPixels[playerX+playerY*width] =  0xffcc0000;
 		}
 		
 		
+	}
+	
+	private void addEnemy(int posX,int posY,Spritesheet spritesheet, TipoEnemy tipoEnemy,int dificuldade,List<Entity>entityList,List<Enemy>enemyList) {
+		//enemy
+		Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,tipoEnemy,dificuldade);
+		entityList.add(en);
+		enemyList.add(en);
+	}
+	
+	private void addAmmo(int posX, int posY,BufferedImage ammoSprite, List<Entity>entityList) {
+		Ammo ammo =new Ammo(posX*tileSize, posY*tileSize, tileSize, tileSize, ammoSprite);
+		ammo.setMask(4, 4, 7, 12);
+		entityList.add(ammo);
+	}
+	
+	private void addLifePack(int posX, int posY,BufferedImage lpSprite, List<Entity>entityList) {
+		LifePack lp =new LifePack(posX*tileSize, posY*tileSize, tileSize, tileSize, lpSprite);
+		lp.setMask(4, 4, 7, 12);
+		entityList.add(lp);
 	}
 }

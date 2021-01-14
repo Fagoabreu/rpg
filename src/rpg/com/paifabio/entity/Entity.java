@@ -113,7 +113,7 @@ public abstract class Entity {
 		return calculateDistance(this.getX(),this.getY(), e2.getX(), e2.getY());
 	}
 	
-	public double calculateDistance(int x1,int y1, int x2, int y2) {
+	public static double calculateDistance(int x1,int y1, int x2, int y2) {
 		
 		return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 	}
