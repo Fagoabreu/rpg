@@ -81,6 +81,7 @@ public class Player extends Entity {
 	
 	public void enableArma() {
 		this.arma =true;
+		Game.getGame().changeMousePointer("/crosshair.png");
 	}
 	
 	public boolean hasArma() {
@@ -314,16 +315,20 @@ public class Player extends Entity {
 			return false;
 		}
 		
-		int offsetX,offsetY=11;
-		if(gunSpriteIndex==0||gunSpriteIndex==2) {
-			offsetX=12;
-		}else {
-			offsetX=(1);
-		}
+		int offsetX=width/2,offsetY=11;
+		//if(gunSpriteIndex==0||gunSpriteIndex==2) {
+		//	offsetX=12;
+		//}else {
+		//	offsetX=1;
+		//}
 		
 		if(dirX==null) {
 			dirY=0.0;
-			dirX= offsetX>6?1.0:-1.0;
+			if(gunSpriteIndex==0||gunSpriteIndex==2) {
+				dirX= 1.0;
+			}else {
+				dirX=(-1.0);
+			}
 		}
 		
 		if(isDamaged) {

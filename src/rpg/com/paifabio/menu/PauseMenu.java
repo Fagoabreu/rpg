@@ -60,7 +60,7 @@ public class PauseMenu {
 			enter=false;
 			Sound.menu.play();
 			if(options[currentOption].equalsIgnoreCase("continue")) {
-				Game.getGame().setContinueGame();
+				Game.getGame().setNormalGameState();
 			}else if(options[currentOption].equalsIgnoreCase("salvar jogo")) {
 				Game.getGame().saveGame();
 			}else if(options[currentOption].equalsIgnoreCase("sair")) {

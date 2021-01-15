@@ -2,8 +2,12 @@ package rpg.com.paifabio.main;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -91,21 +95,30 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	
 	public void setGameOver() {
 		this.gameState=GameState.GAME_OVER;
+		
+		
 	}
 	
-	public void setPauseGame() {
+	public void setPauseGameState() {
 		this.gameState=GameState.PAUSE;
+		changeMousePointer("/blankCursor.png");
 	}
 	
-	public void setContinueGame() {
+	public void setNormalGameState() {
 		this.gameState=GameState.NORMAL;
+		if(player.hasArma()) {
+			changeMousePointer("/crosshair.png");
+		}else {
+			changeMousePointer("/blankCursor.png");
+		}
 	}
 	public void setStartMenu() {
 		this.gameState=GameState.MENU;
+		changeMousePointer("/blankCursor.png");
 	}
 	public void setInitGame() {
 		initialize();
-		this.gameState=GameState.NORMAL;
+		setNormalGameState();
 	}
 	
 	public void saveGame() {
@@ -163,11 +176,12 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		initialize(player,mapSprite);
 	}
 	
-	public void loadGame(String mapSprite) {
+	public void loadGame(int mapNumer) {
 		dificuldade=0;
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
-		initialize(player,mapSprite);
+		enableRngMap =mapNumer>max_level?true:false;
+		initialize(player,"map" + mapNumer);
 	}
 	
 	public void initialize(Player player,String mapSprite) {
@@ -227,11 +241,33 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public void initFrame() {
 		frame = new JFrame("Torre das Caveiras");
 		frame.add(this);
+		
+		//icone janela
+		Image imagem = null;
+		try {
+			imagem = ImageIO.read(getClass().getResource("/icon.png"));
+			frame.setIconImage(imagem);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		//mouse pointer
+		changeMousePointer("/blankCursor.png");
+		
+		//propriedades da janela
 		frame.setResizable(false);
 		frame.pack();
+		frame.setAlwaysOnTop(true);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	
+	public void changeMousePointer(String imagem) {
+		//mouse pointer
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image cursorImage = toolkit.getImage(getClass().getResource(imagem));
+		Cursor cursor = toolkit.createCustomCursor(cursorImage,new Point(0,0), "img"); 
+		frame.setCursor(cursor);
 	}
 	
 	public synchronized void start() {
@@ -424,7 +460,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 			break;
 		case KeyEvent.VK_ESCAPE:
 			if(gameState==GameState.NORMAL) {
-				setPauseGame();
+				setPauseGameState();
 			}
 			break;
 		case KeyEvent.VK_ENTER:

@@ -17,7 +17,7 @@ public class Enemy extends Entity{
 	private double speed=0.4;
 	private int life=3;
 	private int forca=1;
-	private int distanciaVisao=100;
+	private int distanciaVisao=90;
 	
 	
 	private TipoEnemy tipoEnemy=null;
