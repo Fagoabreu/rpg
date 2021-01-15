@@ -84,6 +84,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	private int minimapScale=2;
 	
 	
+	//debug
+	private int debugMouseX=0,debugMouseY=0;
+	
 	private GameState gameState=GameState.MENU;
 	
 	public static Game getGame() {
@@ -117,7 +120,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		changeMousePointer("/blankCursor.png");
 	}
 	public void setInitGame() {
-		initialize();
+		initialize(1);
 		setNormalGameState();
 	}
 	
@@ -164,19 +167,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		gameOverMenu = new GameOverMenu(WIDTH, HEIGHT, SCALE);
 		pauseMenu = new  PauseMenu(WIDTH, HEIGHT, SCALE);
 		
-		this.initialize();
+		this.initialize(1);
 	}
 	
-	public void initialize() {
-		dificuldade=0;
-		player = new Player(0, 0, 16, 16, spritesheet);
-		player.setMask(2,0,12,16);
-		String mapSprite ="map1";
-		enableRngMap=false;
-		initialize(player,mapSprite);
-	}
-	
-	public void loadGame(int mapNumer) {
+	public void initialize(int mapNumer) {
 		dificuldade=0;
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
@@ -266,7 +260,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		//mouse pointer
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Image cursorImage = toolkit.getImage(getClass().getResource(imagem));
-		Cursor cursor = toolkit.createCustomCursor(cursorImage,new Point(0,0), "img"); 
+		Cursor cursor = toolkit.createCustomCursor(cursorImage,new Point(13,13), "img"); 
 		frame.setCursor(cursor);
 	}
 	
@@ -376,6 +370,12 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 				2*SCALE,
 				world.width*SCALE*minimapScale,
 				world.height*SCALE*minimapScale,null);
+		
+		if(enableDebug) {
+			g.setColor(Color.red);
+			g.drawString("mouse", debugMouseX, debugMouseY-20);
+			g.fillOval(debugMouseX, debugMouseY, 4, 4);
+		}
 		
 		if(gameState==GameState.GAME_OVER) {
 			gameOverMenu.render(g);
@@ -559,5 +559,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public void mouseDragged(MouseEvent e) {}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e) {
+		debugMouseX = e.getX();
+		debugMouseY = e.getY();
+		
+	}
 }

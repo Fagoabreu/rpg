@@ -83,7 +83,7 @@ public class StartMenu {
 			String[] spl2 = spl[i].split(":");
 			switch(SaveParameter.valueOf(spl2[0])) {
 			case LEVEL:
-				Game.getGame().loadGame(Integer.valueOf(spl2[1]));
+				Game.getGame().initialize(Integer.valueOf(spl2[1]));
 				Game.getGame().setNormalGameState();
 				break;
 			case PLAYER_WEAPON:

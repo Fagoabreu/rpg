@@ -316,11 +316,6 @@ public class Player extends Entity {
 		}
 		
 		int offsetX=width/2,offsetY=11;
-		//if(gunSpriteIndex==0||gunSpriteIndex==2) {
-		//	offsetX=12;
-		//}else {
-		//	offsetX=1;
-		//}
 		
 		if(dirX==null) {
 			dirY=0.0;
@@ -336,7 +331,7 @@ public class Player extends Entity {
 			dirY =	Game.getGame().getRandonInt(3) 	-1.0;
 		}
 		
-		new BulletShoot(this.getX()+offsetX,this.getY()+offsetY,2,2,null,dirX,dirY,4);
+		new BulletShoot(this.getX()+offsetX-1,this.getY()+offsetY-1,2,2,null,dirX,dirY,4);
 		dirX =null;
 		dirY=null;
 		ammo--;
