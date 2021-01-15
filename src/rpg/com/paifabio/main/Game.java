@@ -48,7 +48,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	private Thread thread;
 	private boolean isRunning;
 	public final int WIDTH = 240;//240//320
-	public final int HEIGHT = 135;//160//240//320
+	public final int HEIGHT = 160;//160//240//320
 	private int SCALE = 3;
 	private final boolean isFullScreen=true;
 	public int curFPS =0;
@@ -150,7 +150,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		addMouseMotionListener(this);
 		if(isFullScreen){
 			this.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
-			float scaleX = Toolkit.getDefaultToolkit().getScreenSize().width/WIDTH;
+			//float scaleX = Toolkit.getDefaultToolkit().getScreenSize().width/WIDTH;
 			float scaleY =Toolkit.getDefaultToolkit().getScreenSize().height/HEIGHT;
 			SCALE = (int)scaleY;
 		}else {
@@ -337,10 +337,6 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 			return;
 		}
 		Graphics g = image.getGraphics();
-		//limpa o fundo
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
 		
 		//renderização do jogo
 		//Graphics2D g2 = (Graphics2D) g;
@@ -370,20 +366,28 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		g.dispose();
 		g = bs.getDrawGraphics();
 		
-		g.drawImage(image, 0, 0,WIDTH* SCALE,HEIGHT*SCALE, null);
-		ui.renderTexts(g);
+		//limpa o fundo
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		world.renderMiniMap(miniMapPixels,player);
-		g.drawImage(
-				miniMap,(WIDTH-(world.width*minimapScale)-2)*SCALE,
-				2*SCALE,
-				world.width*SCALE*minimapScale,
-				world.height*SCALE*minimapScale,null);
-		
-		if(enableDebug) {
-			g.setColor(Color.red);
-			g.drawString("mouse", debugMouseX, debugMouseY-20);
-			g.fillOval(debugMouseX, debugMouseY, 4, 4);
+		if(gameState!=GameState.MENU) {
+			//desenha o jogo
+			g.drawImage(image, 0, 0,WIDTH* SCALE,HEIGHT*SCALE, null);
+			ui.renderTexts(g);
+			
+			//define e desenha o minimapa
+			world.renderMiniMap(miniMapPixels,player);
+			g.drawImage(
+					miniMap,(WIDTH-(world.width*minimapScale)-2)*SCALE,
+					2*SCALE,
+					world.width*SCALE*minimapScale,
+					world.height*SCALE*minimapScale,null);
+			//debug
+			if(enableDebug) {
+				g.setColor(Color.red);
+				g.drawString("mouse", debugMouseX, debugMouseY-20);
+				g.fillOval(debugMouseX, debugMouseY, 4, 4);
+			}
 		}
 		
 		if(gameState==GameState.GAME_OVER) {
