@@ -25,6 +25,7 @@ public class Enemy extends Entity{
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
 	private BufferedImage[] downPlayer;
+	private BufferedImage[] upPlayer;
 	private BufferedImage[] idlePlayer;
 	private BufferedImage[] damagePlayer;
 	
@@ -55,6 +56,7 @@ public class Enemy extends Entity{
 			this.setMask(3,0,9,16);
 			idlePlayer = new BufferedImage[4];
 			downPlayer = new BufferedImage[4];
+			upPlayer = new BufferedImage[4];
 			leftPlayer = new BufferedImage[4];
 			rightPlayer = new BufferedImage[4];
 			damagePlayer = new BufferedImage[2];
@@ -63,6 +65,11 @@ public class Enemy extends Entity{
 			idlePlayer[1] =	spritesheet.getSpriteByPosition(3, 6);
 			idlePlayer[2] =	spritesheet.getSpriteByPosition(4, 6);
 			idlePlayer[3] =	spritesheet.getSpriteByPosition(5, 6);
+			
+			upPlayer[0] = spritesheet.getSpriteByPosition(2, 7);
+			upPlayer[1] = spritesheet.getSpriteByPosition(3, 7);
+			upPlayer[2] = spritesheet.getSpriteByPosition(4, 7);
+			upPlayer[3] = spritesheet.getSpriteByPosition(5, 7);
 			
 			downPlayer[0] = spritesheet.getSpriteByPosition(2, 7);
 			downPlayer[1] = spritesheet.getSpriteByPosition(3, 7);
@@ -89,15 +96,21 @@ public class Enemy extends Entity{
 			super.setMask(0,6,14,10);
 			
 			idlePlayer = new BufferedImage[4];
+			upPlayer = new BufferedImage[4];
 			downPlayer= new BufferedImage[4];
 			leftPlayer = new BufferedImage[4];
 			rightPlayer = new BufferedImage[4];
 			damagePlayer = new BufferedImage[2];
 			
-			idlePlayer[0] = spritesheet.getSpriteByPosition(6, 6);
-			idlePlayer[1] = spritesheet.getSpriteByPosition(7, 6);
-			idlePlayer[2] = spritesheet.getSpriteByPosition(8, 6);
-			idlePlayer[3] = spritesheet.getSpriteByPosition(9, 6);
+			idlePlayer[0] = spritesheet.getSpriteByPosition(6, 5);
+			idlePlayer[1] = spritesheet.getSpriteByPosition(7, 5);
+			idlePlayer[2] = spritesheet.getSpriteByPosition(8, 5);
+			idlePlayer[3] = spritesheet.getSpriteByPosition(9, 5);
+			
+			upPlayer[0] = spritesheet.getSpriteByPosition(6, 6);
+			upPlayer[1] = spritesheet.getSpriteByPosition(7, 6);
+			upPlayer[2] = spritesheet.getSpriteByPosition(8, 6);
+			upPlayer[3] = spritesheet.getSpriteByPosition(9, 6);
 			
 			downPlayer[0] = spritesheet.getSpriteByPosition(6, 7);
 			downPlayer[1] = spritesheet.getSpriteByPosition(7, 7);
@@ -178,8 +191,10 @@ public class Enemy extends Entity{
 			curAnim = rightPlayer;
 		}else if (direcao.x==(-1) ) {
 			curAnim = leftPlayer;
-		}else if(direcao.y==1 || direcao.y==(-1)){
+		}else if(direcao.y==1){
 			curAnim = downPlayer;
+		}else if( direcao.y==(-1)){
+			curAnim = upPlayer;
 		}
 		
 		super.setMaskRectangle();
