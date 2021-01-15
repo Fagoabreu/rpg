@@ -169,7 +169,7 @@ public class StartMenu {
 			BufferedImage backImage = ImageIO.read(getClass().getResource("/menu.png"));
 			int backWidth = backImage.getWidth();
 			int backHeight = backImage.getHeight();
-			g2.drawImage(backImage,0,0, backWidth*2*scale, backHeight*2*scale, null);
+			g2.drawImage(backImage,0,0, backWidth*scale, backHeight*scale, null);
 		} catch (IOException e) {
 			System.out.println("Não foi possivel localizar a imagem de fundo do menu");
 			e.printStackTrace();
@@ -182,7 +182,7 @@ public class StartMenu {
 		//titulo
 		g2.setFont(FontBuilder.getFont(30*scale, true));
 		g2.setColor(Color.black);
-		g2.drawString("Torre das Caveiras", (width-180)/2*scale +4 ,(40)*scale +4);
+		g2.drawString("Torre das Caveiras", (width-180+2)/2*scale  ,(40+2)*scale );
 		g2.setColor(Color.yellow);
 		g2.drawString("Torre das Caveiras", (width-180)/2*scale ,(40)*scale);
 		
@@ -190,14 +190,14 @@ public class StartMenu {
 		//rodapé
 		g2.setFont(FontBuilder.getFont(8*scale, true));
 		g2.setColor(Color.black);
-		g2.drawString("Por Fabio Gomes de Abreu", (width-70)*scale +1 ,(height-15)*scale +1);
-		g2.drawString("para game JAAJ V", (width-70)*scale +1,(height-10)*scale +1);
-		g2.drawString("Agradecimento a Danki Code", (width-70)*scale +1 ,(height-5)*scale +1);
+		g2.drawString("Por Fabio Gomes de Abreu", (width-75)*scale+1  ,(height-15)*scale +1);
+		g2.drawString("para game JAAJ V", (width-75)*scale+1 ,(height-10)*scale +1 );
+		g2.drawString("Agradecimento a Danki Code", (width-75)*scale+1  ,(height-5)*scale +1 );
 		
 		g2.setColor(Color.white);
-		g2.drawString("Por Fabio Gomes de Abreu", (width-70)*scale ,(height-15)*scale);
-		g2.drawString("para game JAAJ V", (width-70)*scale ,(height-10)*scale);
-		g2.drawString("Agradecimento a Danki Code", (width-70)*scale ,(height-5)*scale);
+		g2.drawString("Por Fabio Gomes de Abreu", (width-75)*scale ,(height-15)*scale);
+		g2.drawString("para game JAAJ V", (width-75)*scale ,(height-10)*scale);
+		g2.drawString("Agradecimento a Danki Code", (width-75)*scale ,(height-5)*scale);
 						
 		//opções
 		for (int i=0;i<=maxOption;i++) {
@@ -205,15 +205,15 @@ public class StartMenu {
 			if(i==currentOption) {	
 				colorText = Color.yellow;
 				g2.setFont(FontBuilder.getFont(22*scale, true));
-				g2.drawString("->", (25)*scale/2 ,((height )*scale/2)+ (i*30));
+				g2.drawString("->", 25*scale/2 ,(height/2 + (i*10))*scale);
 			}else {
 				colorText = Color.white;
 				g2.setFont(FontBuilder.getFont(16*scale, true));
 			}
 			g2.setColor(Color.black);
-			g2.drawString(options[i], (60*scale/2)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.drawString(options[i], (60*scale/2)+2 ,(height/2 + (i*10)+1)*scale);
 			g2.setColor(colorText);
-			g2.drawString(options[i], (60*scale/2) ,((height )*scale/2)+ (i*30));
+			g2.drawString(options[i], (60*scale/2) ,(height/2 + i*10)*scale);
 			
 		}
 	}

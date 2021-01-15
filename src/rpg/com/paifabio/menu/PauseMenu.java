@@ -19,7 +19,6 @@ public class PauseMenu {
 		"DELETE = Modo Depuração"
 		
 	};
-	
 	private final String[] options = {
 			"continue",
 			"salvar jogo",
@@ -84,24 +83,24 @@ public class PauseMenu {
 			if(i==currentOption) {	
 				colorText = Color.yellow;
 				g2.setFont(FontBuilder.getFont(22*scale, true));
-				g2.drawString("->", (25)*scale/2 ,((height )*scale/2)+ (i*30));
+				g2.drawString("->", 25*scale/2 ,(height/2 + i*10)*scale);
 			}else {
 				colorText = Color.white;
 				g2.setFont(FontBuilder.getFont(16*scale, true));
 			}
 			g2.setColor(Color.black);
-			g2.drawString(options[i], (60*scale/2)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.drawString(options[i], (60*scale/2)+2 ,(height/2 + i*10 +2)*scale);
 			g2.setColor(colorText);
-			g2.drawString(options[i], (60*scale/2) ,((height )*scale/2)+ (i*30));
+			g2.drawString(options[i], 60*scale/2 ,(height/2 + i*10)*scale);
 			
 		}
 		
 		for(int i =0; i<comandos.length;i++) {
 			g2.setFont(FontBuilder.getFont(8*scale, true));
 			g2.setColor(Color.black);
-			g2.drawString(comandos[i], ((width-80)*scale)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.drawString(comandos[i], (width-80+1)*scale ,(height/2 + i*10+1)*scale);
 			g2.setColor(Color.white);
-			g2.drawString(comandos[i], ((width-80)*scale) ,((height )*scale/2)+ (i*30));
+			g2.drawString(comandos[i], (width-80)*scale ,(height/2 + i*10)*scale);
 		}
 	}
 }

@@ -48,8 +48,9 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	private Thread thread;
 	private boolean isRunning;
 	public final int WIDTH = 240;//240//320
-	public final int HEIGHT = 160;//160//240//320
-	private final int SCALE = 3;
+	public final int HEIGHT = 135;//160//240//320
+	private int SCALE = 3;
+	private final boolean isFullScreen=true;
 	public int curFPS =0;
 	public boolean enableDebug=false;
 	private boolean enableLight=false;
@@ -147,7 +148,14 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		if(isFullScreen){
+			this.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
+			float scaleX = Toolkit.getDefaultToolkit().getScreenSize().width/WIDTH;
+			float scaleY =Toolkit.getDefaultToolkit().getScreenSize().height/HEIGHT;
+			SCALE = (int)scaleY;
+		}else {
+			this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		}
 		initFrame();
 		
 		//inicializa objetos
@@ -248,12 +256,13 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		changeMousePointer("/blankCursor.png");
 		
 		//propriedades da janela
-		frame.setResizable(false);
+		frame.setUndecorated(true);//remove as bortdas da janela
+		frame.setResizable(false);//não deixa redimensionar
 		frame.pack();
-		frame.setAlwaysOnTop(true);
+		frame.setAlwaysOnTop(true);//deixa a janela sempre no topo
 		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//seta para finalizar a execução ao fechar a janela
+		frame.setVisible(true);//mostra a janela
 	}
 	
 	public void changeMousePointer(String imagem) {

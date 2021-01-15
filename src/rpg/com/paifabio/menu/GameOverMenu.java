@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import rpg.com.paifabio.graficos.FontBuilder;
 import rpg.com.paifabio.main.Game;
 import rpg.com.paifabio.sound.Sound;
 
@@ -62,27 +63,27 @@ public class GameOverMenu {
 		g2.setColor(new Color(0,0,0,100));
 		g2.fillRect(0, 0, width*scale, height*scale);
 		
-		g2.setFont(new Font("arial",Font.BOLD,13*scale));
+		g2.setFont(FontBuilder.getFont(26*scale,true));
 		g2.setColor(Color.black);
-		g2.drawString("Game Over", ((width-60+1)*scale)/2 ,(50+1)*scale );
+		g2.drawString("Game Over", ((width-60+1))/2*scale ,(50+1)*scale );
 		g2.setColor(Color.yellow);
-		g2.drawString("Game Over", ((width-60)*scale)/2 ,50*scale );
+		g2.drawString("Game Over", ((width-60))/2*scale ,50*scale );
 
 		
 		for (int i=0;i<=maxOption;i++) {
 			Color colorText;
 			if(i==currentOption) {	
 				colorText = Color.yellow;
-				g2.setFont(new Font("arial",Font.BOLD,11*scale));
-				g2.drawString("->", (25)*scale/2 ,((height )*scale/2)+ (i*30));
+				g2.setFont(FontBuilder.getFont(18*scale,true));
+				g2.drawString("->", 25/2*scale ,(height/2+ i*10)*scale);
 			}else {
 				colorText = Color.white;
-				g2.setFont(new Font("arial",Font.BOLD,8*scale));
+				g2.setFont(FontBuilder.getFont(14*scale,true));
 			}
 			g2.setColor(Color.black);
-			g2.drawString(options[i], (60*scale/2)+2 ,((height )*scale/2)+ (i*30)+2);
+			g2.drawString(options[i], (60*scale/2)+2 ,(height/2 + i*10 +2)*scale);
 			g2.setColor(colorText);
-			g2.drawString(options[i], (60*scale/2) ,((height )*scale/2)+ (i*30));
+			g2.drawString(options[i], 60/2*scale ,(height/2+ i*10)*scale);
 			
 		}
 	}
