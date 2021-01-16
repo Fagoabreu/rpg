@@ -129,6 +129,10 @@ public class Player extends Entity {
 		this.jump=true;
 	}
 	
+	public BufferedImage getCurImage() {
+		return this.curAnim[index];
+	}
+	
 	public Player(int x, int y, int width, int height,Spritesheet spritesheet) {
 		this(x, y, width,  height,spritesheet,0,0,width,height);	
 	}

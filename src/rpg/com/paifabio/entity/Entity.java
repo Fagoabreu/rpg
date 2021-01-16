@@ -153,6 +153,35 @@ public abstract class Entity {
 		return (e1.maskRectangle.intersects(e2.maskRectangle) && e1.z == e2.z);
 	}
 	
+	public static boolean isCollidingPerfect(int x1, int y1,BufferedImage spr1, int x2, int y2, BufferedImage spr2) {
+		int[] pixels1 =new int[spr1.getWidth() * spr1.getHeight()];
+		spr1.getRGB(0, 0, spr1.getWidth(), spr1.getHeight(), pixels1, 0, spr1.getWidth());
+		
+		int[] pixels2 =new int[spr2.getWidth() * spr2.getHeight()];
+		spr2.getRGB(0, 0, spr2.getWidth(), spr2.getHeight(), pixels2, 0, spr2.getWidth());
+		
+		for (int xx1=0;xx1<spr1.getWidth();xx1++) {
+			for (int yy1=0;yy1<spr1.getHeight();yy1++) {
+				if(pixels1[xx1 + yy1 *spr1.getWidth()]== 0x00ffffff) {
+					continue;
+				}
+				for (int xx2=0;xx2<spr2.getWidth();xx2++) {
+					for (int yy2=0;yy2<spr2.getHeight();yy2++) {
+						if(pixels2[xx2 + yy2 *spr2.getWidth()]== 0x00ffffff) {
+							continue;
+						}
+						if(xx1+x1==xx2+x2 && yy1+y1 ==yy2+y2) {
+							return true;
+						}
+						
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	public boolean isColliding(Entity e2) {
 		if(this.maskRectangle.intersects(e2.maskRectangle) && this.z == e2.z) {
 			return true;
