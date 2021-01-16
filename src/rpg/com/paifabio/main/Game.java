@@ -50,10 +50,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public final int WIDTH = 240;//240//320
 	public final int HEIGHT = 160;//160//240//320
 	private int SCALE = 3;
-	private final boolean isFullScreen=true;
+	private final boolean isFullScreen=false;
 	public int curFPS =0;
 	public boolean enableDebug=false;
-	private boolean enableLight=false;
+	private boolean enableLight=true;
 	private boolean enableRngMap=true;
 	
 	private int cur_level=1,max_level=7;
@@ -182,14 +182,15 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		dificuldade=0;
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
-		enableRngMap =mapNumer>max_level?true:false;
-		initialize(player,"map" + mapNumer);
+		initialize(player, mapNumer);
 	}
 	
-	public void initialize(Player player,String mapSprite) {
+	public void initialize(Player player,int mapNumer) {
 		entityList = new ArrayList<Entity>();
 		enemyList = new ArrayList<Enemy>();
 		bulletList = new ArrayList<BulletShoot>();
+		enableRngMap =mapNumer>max_level?true:false;
+		enableLight = mapNumer>max_level*2?true:false;
 		
 		entityList.add(player);
 		
@@ -212,7 +213,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 					rand
 					);
 		}else {
-			world = new World("/"+mapSprite +".png",
+			world = new World("/map"+mapNumer +".png",
 				spritesheet.getSpriteByPosition(0, 0),//floor
 				spritesheet.getSpriteByPosition(1, 0),//wall
 				spritesheet.getSpriteByPosition(0, 1),//sky
@@ -303,12 +304,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 			
 			if(enemyList.size()==0) {
 				cur_level++;
-				if (cur_level>max_level) {
-					//cur_level=1;
-					dificuldade++;
-					enableRngMap=true;
-				}
-				initialize(player, "map"+cur_level);
+				initialize(player, cur_level);
 			}
 		}else if (gameState==GameState.GAME_OVER) {
 			gameOverMenu.tick();
@@ -323,8 +319,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		for(int xx=0;xx<this.WIDTH;xx++) {
 			for(int yy=0;yy<this.HEIGHT;yy++) {
 				if(lightMapPixels[xx+(yy * this.WIDTH)] == 0xffffffff) {
-					
-					pixels[xx+(yy * this.WIDTH)] = 0;
+					int pixel = Pixel.getLightBlend(pixels[xx+(yy * this.WIDTH)],0x808080,0 );
+					pixels[xx+(yy * this.WIDTH)] = pixel;
 				}
 			}
 		}
@@ -340,6 +336,10 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		
 		//renderização do jogo
 		//Graphics2D g2 = (Graphics2D) g;
+		
+		//limpa o fundo
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		//desenha o mapa
 		world.render(g);
@@ -366,9 +366,14 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		g.dispose();
 		g = bs.getDrawGraphics();
 		
-		//limpa o fundo
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
+		g.setColor(Color.black);
+		if(isFullScreen) {
+			g.fillRect(0, 0, 
+					Toolkit.getDefaultToolkit().getScreenSize().width,
+					Toolkit.getDefaultToolkit().getScreenSize().height);
+		}else {
+			g.fillRect(0, 0, WIDTH* SCALE, HEIGHT*SCALE);
+		}
 		
 		if(gameState!=GameState.MENU) {
 			//desenha o jogo
