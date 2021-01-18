@@ -7,7 +7,7 @@ import java.util.List;
 
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
-import rpg.com.paifabio.main.Sound;
+import rpg.com.paifabio.sound.Sound;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
 
@@ -15,6 +15,7 @@ public class Player extends Entity {
 	
 	public boolean right,left,up,down;
 	public double speed=0.8;
+	private double jumpSpeed =1.5f;
 	
 	private int frames = 0,maxFrames=10, index = 0,curDamagedFrame=0,maxDamagedFrames=20;
 	private boolean moved=false;
@@ -39,26 +40,27 @@ public class Player extends Entity {
 	private Double dirX=null,dirY=null;
 	
 	private double life=50,maxLife=50;
+	
+	private boolean enableJump=true;
+	private boolean jump=false,isJumping =false,jumpUp=false;
+	private double jumpFrames=30,jumpCur = 0;
 
 	public boolean heal(int value) {
 		if (life==maxLife)
 			return false;
 		
-		life+=value;
-		if(life>maxLife) 
-			life=maxLife;
+		this.setLife(this.life+=value);
 		
 		return true;
 	}
 	
 	public void takeDamage(int value) {
-		life-=value;
-		isDamaged = true;
+		this.setLife(this.life-=value);
+		this.isDamaged = true;
 		
-		if (life<=0) {
+		if (this.getLife()==0) {
 			//die
 			Sound.death.play();
-			life=0;
 			Game.getGame().setGameOver();
 			return;
 		}else {
@@ -79,10 +81,25 @@ public class Player extends Entity {
 	
 	public void enableArma() {
 		this.arma =true;
+		Game.getGame().changeMousePointer("/crosshair.png");
+	}
+	
+	public boolean hasArma() {
+		return this.arma;
 	}
 	
 	public double getLife() {
 		return life;
+	}
+	
+	public void setLife( double life) {
+		if(life>maxLife) {
+			this.life=maxLife;
+		}else if(life<0) {
+			this.life=0;
+		}else {
+			this.life=life;
+		}
 	}
 	
 	public double getMaxLife() {
@@ -108,6 +125,14 @@ public class Player extends Entity {
 		this.dirY=dirY;
 	}
 	
+	public void setJump(boolean value) {
+		this.jump=true;
+	}
+	
+	public BufferedImage getCurImage() {
+		return this.curAnim[index];
+	}
+	
 	public Player(int x, int y, int width, int height,Spritesheet spritesheet) {
 		this(x, y, width,  height,spritesheet,0,0,width,height);	
 	}
@@ -116,7 +141,7 @@ public class Player extends Entity {
 		super(x, y, width, height, spritesheet.getSprite(32, 0));
 		super.setMask(maskX, maskY, maskW, maskH);
 		
-		//inicializa animaÃ§Ãµes do player
+		//inicializa animações do player
 		idlePlayer = new BufferedImage[8];
 		rightPlayer = new BufferedImage[4];
 		leftPlayer = new BufferedImage[4];
@@ -153,22 +178,47 @@ public class Player extends Entity {
 		idlePlayer[6] =	spritesheet.getSprite(64, 80);
 		idlePlayer[7] =	spritesheet.getSprite(80, 80);
 		
-		damagePlayer[0] = spritesheet.getSpriteByPosition(0, 2);
-		damagePlayer[1] = spritesheet.getSpriteByPosition(1, 2);
+		damagePlayer[0] = spritesheet.getSpriteByPosition(0, 5);
+		damagePlayer[1] = spritesheet.getSpriteByPosition(1, 5);
 		
 		curAnim=idlePlayer;
 		
-		//inicializa animaÃ§Ãµes de armas
+		//inicializa animações de armas
 		gunSprites = new BufferedImage[5];
 		gunSprites[0] = spritesheet.getSpriteByPosition(8, 0);//direita
 		gunSprites[1] = spritesheet.getSpriteByPosition(9, 0);//esquerda
 		gunSprites[2] = spritesheet.getSpriteByPosition(8, 1);//cima direita
 		gunSprites[3] = spritesheet.getSpriteByPosition(9, 1);//cima esquerda
-		gunSprites[4] = spritesheet.getSpriteByPosition(8, 2);//hit
+		gunSprites[4] = spritesheet.getSpriteByPosition(7, 1);//hit
 		gunSpriteIndex=0;
 	}
 	
 	public void tick() {
+		depth=2;
+		
+		//jump é a variavel que inicia o pulo
+		if(jump && enableJump) { //criei o enablejump para desabilitar o pulo do personagem
+			jump=false; //já usei o flag posso desligalo evitando um novo pulo após soltar o botao
+			if(isJumping==false) {//verifica se o personagem não está no meio de um pulo
+				isJumping=true; //inicia o processo de pular
+				jumpUp=true;    //inicia o pulo subindo
+			}
+		}
+		
+		if(isJumping) { //executa o pulo
+			if(jumpUp) {//Jumpup = true siginifica que está subindo
+				jumpCur+=jumpSpeed;
+				if(jumpCur >= jumpFrames) {//quando jumpCur passar a altura(jumpFrames) tem que descer
+					jumpUp=false;
+				}
+			}else { //se o jumpup =falso o personagem está caindo(substuindo o Jump Down)
+				jumpCur-=jumpSpeed;
+				if(jumpCur<=0) {//verifica se o personagem chegou ao chão e finaliza o pulo
+					isJumping =false;
+				}
+			}
+			z=jumpCur; //altera a altura do jogador
+		}
 		
 		//MOVIMENTA E TROCA ANIMAÃ‡ÃƒO
 		moved = false;
@@ -186,7 +236,7 @@ public class Player extends Entity {
 			curAnim = leftPlayer;
 			gunSpriteIndex=1;
 		}
-		if(World.getWorld().isfree((int)xNext,this.getY())){
+		if(World.getWorld().isfree((int)xNext,this.getY(),this.getZ())){
 			x=xNext;
 			super.setMaskRectangle();
 		}
@@ -212,7 +262,7 @@ public class Player extends Entity {
 			}
 		}
 		
-		if(World.getWorld().isfree(this.getX(),(int) yNext)){
+		if(World.getWorld().isfree(this.getX(),(int) yNext,this.getZ())){
 			y=yNext;
 			super.setMaskRectangle();
 		}
@@ -269,16 +319,15 @@ public class Player extends Entity {
 			return false;
 		}
 		
-		int offsetX,offsetY=11;
-		if(gunSpriteIndex==0||gunSpriteIndex==2) {
-			offsetX=12;
-		}else {
-			offsetX=(1);
-		}
+		int offsetX=width/2,offsetY=11;
 		
 		if(dirX==null) {
 			dirY=0.0;
-			dirX= offsetX>6?1.0:-1.0;
+			if(gunSpriteIndex==0||gunSpriteIndex==2) {
+				dirX= 1.0;
+			}else {
+				dirX=(-1.0);
+			}
 		}
 		
 		if(isDamaged) {
@@ -286,7 +335,7 @@ public class Player extends Entity {
 			dirY =	Game.getGame().getRandonInt(3) 	-1.0;
 		}
 		
-		new BulletShoot(this.getX()+offsetX,this.getY()+offsetY,2,2,null,dirX,dirY,4);
+		new BulletShoot(this.getX()+offsetX-1,this.getY()+offsetY-1,2,2,null,dirX,dirY,4);
 		dirX =null;
 		dirY=null;
 		ammo--;
@@ -296,10 +345,13 @@ public class Player extends Entity {
 	
 	@Override
 	public void render (Graphics g) {
-		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y,  null);
+		this.drawSombra(g);
+		
+		//desenha o player
+		g.drawImage(curAnim[index], this.getX()-Camera.x, this.getY()-Camera.y-this.getZ(),  null);
 		if(arma) {
 			//desenhaArma
-			g.drawImage(gunSprites[gunSpriteIndex],this.getX()-Camera.x, this.getY()-Camera.y,  null);
+			g.drawImage(gunSprites[gunSpriteIndex],this.getX()-Camera.x, this.getY()-Camera.y-this.getZ(),  null);
 		}
 		super.drawMaskRectangle(g, Color.blue);
 	}
