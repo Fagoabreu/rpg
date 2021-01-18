@@ -50,8 +50,8 @@ public class World {
 			Random rand
 			) {
 		//setando parametros
-		this.width=30;
-		this.height=30;
+		this.width=25;
+		this.height=25;
 		int[] pixels = new int[width * height];
 		tiles = new Tile[pixels.length];
 		layer2 = new Tile[pixels.length];
@@ -119,7 +119,7 @@ public class World {
 			//adiciona inimigos no chão chance 2% até chegar ao maximo de inimigos
 			if(Entity.calculateDistance(player.getX(), player.getY(), xx*tileSize, yy*tileSize)>20*tileSize 
 					&& totalEnemies>0 
-					&& rand.nextInt(50)<1) {
+					&& rand.nextInt(50)<2) {
 				totalEnemies--;
 				TipoEnemy[] tiposInimigo= TipoEnemy.values();
 				TipoEnemy tipoInimigo = tiposInimigo [rand.nextInt(tiposInimigo.length)];

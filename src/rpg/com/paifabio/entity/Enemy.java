@@ -51,8 +51,8 @@ public class Enemy extends Entity{
 		this.tipoEnemy =tipoEnemy;
 		if(this.tipoEnemy == TipoEnemy.ESQUELETO) {
 			life=3;
-			speed=0.4 + (0.05 * dificuldade);
-			forca=1 + +dificuldade;
+			speed=0.4 + (0.02 * dificuldade);
+			forca=1 +dificuldade;
 			this.setMask(3,0,9,16);
 			idlePlayer = new BufferedImage[4];
 			downPlayer = new BufferedImage[4];

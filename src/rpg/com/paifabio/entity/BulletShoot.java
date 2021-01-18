@@ -22,7 +22,7 @@ public class BulletShoot extends Entity{
 		this.dy=dy;
 		this.speed=speed;
 		this.curlifeTime=0;
-		maxLifeTime=30;
+		maxLifeTime=20;
 		Sound.shoot.play();
 		Game.getGame().bulletList.add(this);
 	}
