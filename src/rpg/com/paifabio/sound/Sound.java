@@ -11,8 +11,6 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import rpg.com.paifabio.statics.StaticValues;
-
 public class Sound {
 
 	public static Clips musicBackground = load("/volvion_8bit_level.wav",1);
@@ -73,7 +71,7 @@ public class Sound {
 	public static Clips load(String name,int count) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataInputStream dis = new DataInputStream(SoundOld.class.getResourceAsStream(StaticValues.audioFolder + name));
+			DataInputStream dis = new DataInputStream(Sound.class.getResourceAsStream(name));
 			
 			byte[] buffer = new byte[1024];
 			int read = 0;
@@ -85,6 +83,8 @@ public class Sound {
 			return new Clips(data,count);
 			
 		}catch (Exception e) {
+			System.out.println("Arquivo:" + name);
+			e.printStackTrace();
 			return null;
 		}
 	}

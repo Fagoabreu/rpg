@@ -3,8 +3,6 @@ package rpg.com.paifabio.sound;
 import java.applet.Applet;
 import java.applet.AudioClip;
 
-import rpg.com.paifabio.statics.StaticValues;
-
 public class SoundOld {
 	private AudioClip clip;
 	
@@ -19,7 +17,7 @@ public class SoundOld {
 	
 	private SoundOld(String name) {
 		try {
-			clip=Applet.newAudioClip(SoundOld.class.getResource(StaticValues.audioFolder + "/" + name));
+			clip=Applet.newAudioClip(SoundOld.class.getResource( "/" + name));
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
