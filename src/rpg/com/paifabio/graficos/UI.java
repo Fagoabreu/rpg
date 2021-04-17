@@ -27,7 +27,7 @@ public class UI {
 		g.setColor(Color.white);
 		g.setFont(FontBuilder.getFont(16*scale, true));
 		g.drawString(((int)p.getLife())+" / "+ ((int)p.getMaxLife()), 9*scale, 11*scale);
-		g.drawString("Munição: " + p.getAmmo() + "/" + p.getMaxAmmo(), 9*scale, (Game.getGame().HEIGHT -6) * scale);
+		g.drawString("MuniÃ§Ã£o: " + p.getAmmo() + "/" + p.getMaxAmmo(), 9*scale, (Game.getGame().HEIGHT -6) * scale);
 		
 		if(Game.getGame().enableDebug) {
 			g.drawString("FPS:" + Game.getGame().curFPS, (Game.getGame().WIDTH/2)*scale, 11*scale);
