@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -17,13 +16,14 @@ import rpg.com.paifabio.entity.Weapon;
 import rpg.com.paifabio.enums.TipoEnemy;
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
+import rpg.com.paifabio.singletons.RandomSingleton;
 
 public class World {
 	
 	private Tile[] tiles;
 	private Tile[] layer2;
 	public int width,height;
-	public int tileSize=16;
+	public final int tileSize=16;
 	
 	private static World world;
 	
@@ -35,6 +35,7 @@ public class World {
 		World.world = world;
 	}
 	
+	//criacao de mapa randomico
 	public World(
 			BufferedImage floorTile,
 			BufferedImage wallTile,
@@ -46,8 +47,7 @@ public class World {
 			List<Enemy>enemyList,
 			Player player,
 			int dificuldade,
-			int totalEnemies,
-			Random rand
+			int totalEnemies
 			) {
 		//setando parametros
 		this.width=30;
@@ -59,6 +59,7 @@ public class World {
 		int totalAmmo = totalEnemies/2;
 		int totalLifepack = totalEnemies/3;
 		
+		RandomSingleton rand = RandomSingleton.getInstance();
 		
 		//posicionando o player
 		int playerX = 1;
@@ -76,7 +77,7 @@ public class World {
 			}
 		}
 		
-		//criando o chão
+		//criando o chao
 		for (int xx = 0; xx < this.width; xx++) {
 			for (int yy = 0; yy < this.height; yy++) {
 				tiles[xx+yy*this.width] = new WallTile(xx*tileSize,yy*tileSize, wallTile); 
@@ -86,6 +87,7 @@ public class World {
 		int dir=0;
 		int xx=1,yy=1;
 		tiles[xx+yy*width] = new FloorTile(xx*tileSize,yy*tileSize, floorTile);
+		
 		
 		for (int i=0;i<1200;i++) {
 			if(dir==0) {
@@ -110,13 +112,13 @@ public class World {
 				}
 			}
 			
-			//altera direção chance 30%
+			//altera direcao chance 30%
 			if(rand.nextInt(10)<3 ) {
 				dir= rand.nextInt(4);
 			}
 			
 			
-			//adiciona inimigos no chão chance 2% até chegar ao maximo de inimigos
+			//adiciona inimigos no chao chance 2% ate chegar ao maximo de inimigos
 			if(Entity.calculateDistance(player.getX(), player.getY(), xx*tileSize, yy*tileSize)>20*tileSize 
 					&& totalEnemies>0 
 					&& rand.nextInt(50)<1) {
@@ -124,7 +126,7 @@ public class World {
 				TipoEnemy[] tiposInimigo= TipoEnemy.values();
 				TipoEnemy tipoInimigo = tiposInimigo [rand.nextInt(tiposInimigo.length)];
 				
-				addEnemy(
+				instantiateEnemy(
 						xx, 
 						yy, 
 						spritesheet,
@@ -136,12 +138,12 @@ public class World {
 			//adiciona municao proximo ao player 
 			if(i==1 || (totalAmmo>0 && rand.nextInt(100)<1)) {
 				totalAmmo--;
-				addAmmo(xx, yy, ammoSprite, entityList);
+				instantiateAmmo(xx, yy, ammoSprite, entityList);
 			}
 			//add healthpack
 			if(i==2 || (totalLifepack>0 && rand.nextInt(100)<1)) {
 				totalLifepack--;
-				addLifePack(xx, yy, lifepackSprite, entityList);
+				instantiateLifePack(xx, yy, lifepackSprite, entityList);
 			}
 		
 			
@@ -201,7 +203,7 @@ public class World {
 					//preenche as entidades
 					if(pixelAtual== 0xffff0000) {
 						//enemy Esqueleto
-						addEnemy(
+						instantiateEnemy(
 								posX, 
 								posY, 
 								spritesheet,
@@ -211,7 +213,7 @@ public class World {
 								enemyList);
 					}else if(pixelAtual== 0xffaa0000) {
 						//enemy Lobo
-						addEnemy(
+						instantiateEnemy(
 								posX, 
 								posY, 
 								spritesheet,
@@ -231,10 +233,10 @@ public class World {
 						player.setY(posY*tileSize);
 					}else if(pixelAtual== 0xffffff00) {
 						//amo
-						addAmmo(posX, posY, ammoSprite, entityList);
+						instantiateAmmo(posX, posY, ammoSprite, entityList);
 					}else if(pixelAtual== 0xffff00ff) {
 						//lifepack
-						addLifePack(posX, posY, lifepackSprite, entityList);
+						instantiateLifePack(posX, posY, lifepackSprite, entityList);
 					}
 				}
 			}
@@ -250,14 +252,14 @@ public class World {
 	}
 	
 	public boolean isWall(int x,int y) {
-		//verifica o ponto estÃ¡ lovre com 1 tile de distancia
+		//verifica o tine nas coordenas Ã© uma parede
 		int x1 = x /tileSize;
 		int y1 = y /tileSize;
 		return tiles[x1 + (y1*width)] instanceof WallTile;
 	}
 	
 	public boolean isfree(int xNext,int yNext, int z) {
-		//verifica o ponto estÃ¡ lovre com 1 tile de distancia
+		//verifica se Ã© possivel caminhar no proximo tile
 		int x1 = xNext /tileSize;
 		int y1 = yNext /tileSize;
 		
@@ -334,20 +336,20 @@ public class World {
 		
 	}
 	
-	private void addEnemy(int posX,int posY,Spritesheet spritesheet, TipoEnemy tipoEnemy,int dificuldade,List<Entity>entityList,List<Enemy>enemyList) {
+	private void instantiateEnemy(int posX,int posY,Spritesheet spritesheet, TipoEnemy tipoEnemy,int dificuldade,List<Entity>entityList,List<Enemy>enemyList) {
 		//enemy
 		Enemy en = new Enemy(posX*tileSize, posY*tileSize, tileSize, tileSize, spritesheet,tipoEnemy,dificuldade);
 		entityList.add(en);
 		enemyList.add(en);
 	}
 	
-	private void addAmmo(int posX, int posY,BufferedImage ammoSprite, List<Entity>entityList) {
+	private void instantiateAmmo(int posX, int posY,BufferedImage ammoSprite, List<Entity>entityList) {
 		Ammo ammo =new Ammo(posX*tileSize, posY*tileSize, tileSize, tileSize, ammoSprite);
 		ammo.setMask(4, 4, 7, 12);
 		entityList.add(ammo);
 	}
 	
-	private void addLifePack(int posX, int posY,BufferedImage lpSprite, List<Entity>entityList) {
+	private void instantiateLifePack(int posX, int posY,BufferedImage lpSprite, List<Entity>entityList) {
 		LifePack lp =new LifePack(posX*tileSize, posY*tileSize, tileSize, tileSize, lpSprite);
 		lp.setMask(4, 4, 7, 12);
 		entityList.add(lp);

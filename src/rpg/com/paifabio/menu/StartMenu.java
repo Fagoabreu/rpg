@@ -83,7 +83,7 @@ public class StartMenu {
 			String[] spl2 = spl[i].split(":");
 			switch(SaveParameter.valueOf(spl2[0])) {
 			case LEVEL:
-				Game.getGame().initialize(Integer.valueOf(spl2[1]));
+				Game.getGame().loadLevel(Integer.valueOf(spl2[1]));
 				Game.getGame().setNormalGameState();
 				break;
 			case PLAYER_WEAPON:
@@ -101,7 +101,7 @@ public class StartMenu {
 				Game.getGame().dificuldade =Integer.valueOf(spl2[1]);
 				break;
 			default:
-				System.out.println("Parametro save '"+spl2[0]+"' não implementado");
+				System.out.println("Parametro save '"+spl2[0]+"' nï¿½o implementado");
 				break;
 			}
 		}
@@ -171,7 +171,7 @@ public class StartMenu {
 			int backHeight = backImage.getHeight();
 			g2.drawImage(backImage,0,0, backWidth*scale, backHeight*scale, null);
 		} catch (IOException e) {
-			System.out.println("Não foi possivel localizar a imagem de fundo do menu");
+			System.out.println("Nï¿½o foi possivel localizar a imagem de fundo do menu");
 			e.printStackTrace();
 		}
 		
@@ -187,7 +187,7 @@ public class StartMenu {
 		g2.drawString("Torre das Caveiras", (width-180)/2*scale ,(40)*scale);
 		
 		
-		//rodapé
+		//rodapï¿½
 		g2.setFont(FontBuilder.getFont(8*scale, true));
 		g2.setColor(Color.black);
 		g2.drawString("Por Fabio Gomes de Abreu", (width-75)*scale+1  ,(height-15)*scale +1);
@@ -199,7 +199,7 @@ public class StartMenu {
 		g2.drawString("para game JAAJ V", (width-75)*scale ,(height-10)*scale);
 		g2.drawString("Agradecimento a Danki Code", (width-75)*scale ,(height-5)*scale);
 						
-		//opções
+		//opï¿½ï¿½es
 		for (int i=0;i<=maxOption;i++) {
 			Color colorText;
 			if(i==currentOption) {	

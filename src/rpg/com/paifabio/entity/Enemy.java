@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import rpg.com.paifabio.enums.TipoEnemy;
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
+import rpg.com.paifabio.singletons.RandomSingleton;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
 import rpg.com.paifabio.world.ai.AStar;
@@ -149,7 +150,7 @@ public class Enemy extends Entity{
 				//perseguePlayerSimples(playerRef);
 				perseguePlayerAStar(playerRef);
 			}else {
-				if(Game.getGame().getRandonInt(10)<1) {
+				if(RandomSingleton.getInstance().nextInt(10)<1) {
 					Game.getGame().getPlayer().takeDamage(forca);
 				}
 			}

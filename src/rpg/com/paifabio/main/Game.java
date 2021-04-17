@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -36,6 +35,7 @@ import rpg.com.paifabio.graficos.UI;
 import rpg.com.paifabio.menu.GameOverMenu;
 import rpg.com.paifabio.menu.PauseMenu;
 import rpg.com.paifabio.menu.StartMenu;
+import rpg.com.paifabio.statics.StaticValues;
 import rpg.com.paifabio.world.World;
 
 public class Game extends Canvas implements Runnable,KeyListener, MouseListener,MouseMotionListener{
@@ -67,8 +67,6 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public World world;
 	
 	private Player player;
-	
-	private Random rand;
 	
 	private UI ui;
 	
@@ -121,7 +119,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		changeMousePointer("/blankCursor.png");
 	}
 	public void setInitGame() {
-		initialize(1);
+		loadLevel(1);
 		setNormalGameState();
 	}
 	
@@ -144,7 +142,6 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	}
 	
 	public Game() {
-		rand = new Random();
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -175,17 +172,17 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		gameOverMenu = new GameOverMenu(WIDTH, HEIGHT, SCALE);
 		pauseMenu = new  PauseMenu(WIDTH, HEIGHT, SCALE);
 		
-		this.initialize(1);
+		this.loadLevel(1);
 	}
 	
-	public void initialize(int mapNumer) {
+	public void loadLevel(int mapNumer) {
 		dificuldade=0;
 		player = new Player(0, 0, 16, 16, spritesheet);
 		player.setMask(2,0,12,16);
-		initialize(player, mapNumer);
+		loadLevel(player, mapNumer);
 	}
 	
-	public void initialize(Player player,int mapNumer) {
+	public void loadLevel(Player player,int mapNumer) {
 		entityList = new ArrayList<Entity>();
 		enemyList = new ArrayList<Enemy>();
 		bulletList = new ArrayList<BulletShoot>();
@@ -209,8 +206,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 					enemyList,
 					player,
 					dificuldade,
-					10,
-					rand
+					10
 					);
 		}else {
 			world = new World("/map"+mapNumer +".png",
@@ -237,12 +233,8 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		return player;
 	}
 	
-	public int getRandonInt(int value) {
-		return rand.nextInt(value);
-	}
-	
 	public void initFrame() {
-		frame = new JFrame("Torre das Caveiras");
+		frame = new JFrame(StaticValues.gameName);
 		frame.add(this);
 		
 		//icone janela
@@ -258,11 +250,11 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		
 		//propriedades da janela
 		frame.setUndecorated(true);//remove as bortdas da janela
-		frame.setResizable(false);//não deixa redimensionar
+		frame.setResizable(false);//nï¿½o deixa redimensionar
 		frame.pack();
 		frame.setAlwaysOnTop(true);//deixa a janela sempre no topo
 		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//seta para finalizar a execução ao fechar a janela
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//seta para finalizar a execuï¿½ï¿½o ao fechar a janela
 		frame.setVisible(true);//mostra a janela
 	}
 	
@@ -290,21 +282,19 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		}
 	}
 	
-	public void tick() {
-		
+	
+	public void tick() {	
 		if (gameState==GameState.NORMAL) {
-			
 			for (int i=0;i<entityList.size();i++) {
 				entityList.get(i).tick();
 			}
-			
 			for (int i = 0; i<bulletList.size();i++) {
 				bulletList.get(i).tick();
 			}
 			
 			if(enemyList.size()==0) {
 				cur_level++;
-				initialize(player, cur_level);
+				loadLevel(player, cur_level);
 			}
 		}else if (gameState==GameState.GAME_OVER) {
 			gameOverMenu.tick();
@@ -362,7 +352,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 		//desenha o UI
 		ui.renderImages(g);
 		
-		//chama a função para renderizar
+		//chama a funï¿½ï¿½o para renderizar
 		g.dispose();
 		g = bs.getDrawGraphics();
 		
@@ -552,7 +542,7 @@ public class Game extends Canvas implements Runnable,KeyListener, MouseListener,
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			double angulo = player.getAnguloRad(e.getX()/SCALE, e.getY()/SCALE);
-			//to rotante só passar o angulo enRadianos,e os pontos do centro para rotacionar
+			//to rotate passar o angulo enRadianos,e os pontos do centro para rotacionar
 			double cosAngulo = Math.cos(angulo);
 			double senAngulo = Math.sin(angulo);
 			player.setShoot(true,cosAngulo,senAngulo);

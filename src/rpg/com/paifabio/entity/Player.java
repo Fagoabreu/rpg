@@ -7,6 +7,7 @@ import java.util.List;
 
 import rpg.com.paifabio.graficos.Spritesheet;
 import rpg.com.paifabio.main.Game;
+import rpg.com.paifabio.singletons.RandomSingleton;
 import rpg.com.paifabio.sound.Sound;
 import rpg.com.paifabio.world.Camera;
 import rpg.com.paifabio.world.World;
@@ -141,7 +142,7 @@ public class Player extends Entity {
 		super(x, y, width, height, spritesheet.getSprite(32, 0));
 		super.setMask(maskX, maskY, maskW, maskH);
 		
-		//inicializa animações do player
+		//inicializa animaï¿½ï¿½es do player
 		idlePlayer = new BufferedImage[8];
 		rightPlayer = new BufferedImage[4];
 		leftPlayer = new BufferedImage[4];
@@ -183,7 +184,7 @@ public class Player extends Entity {
 		
 		curAnim=idlePlayer;
 		
-		//inicializa animações de armas
+		//inicializa animaï¿½ï¿½es de armas
 		gunSprites = new BufferedImage[5];
 		gunSprites[0] = spritesheet.getSpriteByPosition(8, 0);//direita
 		gunSprites[1] = spritesheet.getSpriteByPosition(9, 0);//esquerda
@@ -196,24 +197,24 @@ public class Player extends Entity {
 	public void tick() {
 		depth=2;
 		
-		//jump é a variavel que inicia o pulo
+		//jump ï¿½ a variavel que inicia o pulo
 		if(jump && enableJump) { //criei o enablejump para desabilitar o pulo do personagem
-			jump=false; //já usei o flag posso desligalo evitando um novo pulo após soltar o botao
-			if(isJumping==false) {//verifica se o personagem não está no meio de um pulo
+			jump=false; //jï¿½ usei o flag posso desligalo evitando um novo pulo apï¿½s soltar o botao
+			if(isJumping==false) {//verifica se o personagem nï¿½o estï¿½ no meio de um pulo
 				isJumping=true; //inicia o processo de pular
 				jumpUp=true;    //inicia o pulo subindo
 			}
 		}
 		
 		if(isJumping) { //executa o pulo
-			if(jumpUp) {//Jumpup = true siginifica que está subindo
+			if(jumpUp) {//Jumpup = true siginifica que estï¿½ subindo
 				jumpCur+=jumpSpeed;
 				if(jumpCur >= jumpFrames) {//quando jumpCur passar a altura(jumpFrames) tem que descer
 					jumpUp=false;
 				}
-			}else { //se o jumpup =falso o personagem está caindo(substuindo o Jump Down)
+			}else { //se o jumpup =falso o personagem estï¿½ caindo(substuindo o Jump Down)
 				jumpCur-=jumpSpeed;
-				if(jumpCur<=0) {//verifica se o personagem chegou ao chão e finaliza o pulo
+				if(jumpCur<=0) {//verifica se o personagem chegou ao chï¿½o e finaliza o pulo
 					isJumping =false;
 				}
 			}
@@ -331,8 +332,8 @@ public class Player extends Entity {
 		}
 		
 		if(isDamaged) {
-			dirX = 	Game.getGame().getRandonInt(3)  -1.0;
-			dirY =	Game.getGame().getRandonInt(3) 	-1.0;
+			dirX = 	RandomSingleton.getInstance().nextInt(3) -1.0;
+			dirY =	RandomSingleton.getInstance().nextInt(3) -1.0;
 		}
 		
 		new BulletShoot(this.getX()+offsetX-1,this.getY()+offsetY-1,2,2,null,dirX,dirY,4);
