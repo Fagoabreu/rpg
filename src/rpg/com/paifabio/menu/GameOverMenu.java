@@ -12,7 +12,8 @@ public class GameOverMenu {
 	private int width,height,scale;
 	private final String[] options = {
 			"Reiniciar Jogo",
-			"sair"};
+			"sair"
+			};
 	
 	private int currentOption,maxOption;
 	public boolean up,down,enter;

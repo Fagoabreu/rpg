@@ -16,7 +16,7 @@ public class PauseMenu {
 		"E ou MOUSE ESQUERDO = Atacar",
 		"ESC = Parar Jogo",
 		"ENTER = Interagir Menu",
-		"DELETE = Modo Depuração"
+		"DELETE = Modo Depuracao"
 		
 	};
 	private final String[] options = {
